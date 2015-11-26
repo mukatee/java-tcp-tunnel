@@ -27,33 +27,47 @@ Example use from command line (from the scripts directory):
 
 Forward local port 5566 to www.github.com port 80, default options will print decoded (UTF8) strings to console:
 
+```shell
 java -jar tcptunnel-0.1.0.jar 5566 www.github.com 80
+```
 
 To request the site now:
 
+```shell
 curl localhost:5566 --header 'Host: www.github.com'
+```
 
 Note the need to fix the "Host" header for a regular HTTP website request.
 
 Same as above but log to a file.
 
+```shell
 java -jar tcptunnel-0.1.0.jar 5566 www.github.com 80 --logger file-string
+```
 
 Log raw bytes to a file:
 
+```shell
 java -jar tcptunnel-0.1.0.jar 5566 www.github.com 80 --logger file-bytes
+```
 
 Log bytes as list of integers to console:
 
+```shell
 java -jar tcptunnel-0.1.0.jar 5566 www.github.com 80 --logger console-bytes
+```
 
 Log bytes as hexadecimal string to console:
 
+```shell
 java -jar tcptunnel-0.1.0.jar 5566 www.github.com 80 --logger console-bytes --hex
+```
 
 For the options
 
+```shell
 java -jar tcptunnel-0.1.0.jar --help
+```
 
 Example use from Java (from the tests directory):
 -------------------------------------------------
