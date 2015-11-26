@@ -8,18 +8,18 @@ Can be used either from command line or as a Java library.
 But why?
 --------
 
-Too many layers of abstraction on everything makes it hard to figure out what happens when trying to develop some networked software.
-And avoiding all those layers these days is just hard.
-Similarly, trying to test networked software often is just more complicated than it needs to be.
+I write software. In Java (yes, how dinosaurish is that?).
+Pretty much every software I write these days seems to be networked to some extent.
+Trying to test networked software often is just more complicated than it needs to be.
 
-Too many times I have wondered what actually happens when I get errors from all those layers of code in whatever libraries, factories,
-dependency injections and whatnot.
+And then we end up using all kinds of libraries, frameworks, whatever.
+Pretty much everything also seems to fail in mysterious ways under all those layers of libraries, factories, dependency injections, black boxes, or whatever.
 Too many times I have tried to look for some solutions to get insight into this on the internet.
-Too many times have I ended up on the website of Fiddler or some complex solution requiring installing too many dependencies (Mono etc)
-or with complex user interfaces when I just wanted to see what really really went (both ways) on when making those network requests.
+Too many times have I ended up on the website of Fiddler or some complex (for me) solution requiring installing too many dependencies (Mono etc).
+Or with complex user interfaces when I just wanted to see what really went on (both ways client<->server) when making those network requests.
 
 This is an attempt to make debugging and testing the networked stuff easier for me.
-I am a simple kind of a guy (who likes the programming approach) so this is an attempt to make something simple enough for me.
+I am a simple kind of a guy (who likes the programmatic approach), so this is an attempt to make something simple enough for me.
 So that's why.
 
 Example use from command line (from the scripts directory):
@@ -113,11 +113,13 @@ Installing
 
 Either use Maven dependencies or download the jar directly (when I get it uploaded).
 
+```xml
 <dependency>
 	<groupId>net.kanstren</groupId>
 	<artifactId>tcptunnel</artifactId>
 	<version>1.0.0</version>
 </dependency>
+```
 
 or direct [link](http://central.maven.org/maven2/net/kanstren/tcptunnel/1.0.0/tcptunnel-1.0.0.jar)
 
