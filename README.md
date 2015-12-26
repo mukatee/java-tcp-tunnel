@@ -5,8 +5,8 @@ A simple tool for capturing and inspecting data sent over a socket.
 
 Can be used either from command line or as a Java library.
 
-But why?
---------
+Why?
+----
 
 I write software. In Java (yes, how dinosaurish is that?).
 Pretty much every software I write these days seems to be networked to some extent.
@@ -125,17 +125,17 @@ public class CaptureTests {
 Installing
 ----------
 
-Either use Maven dependencies or download the jar directly (when I get it uploaded).
+Either use Maven dependencies or download the jar directly.
 
 ```xml
 <dependency>
-	<groupId>net.kanstren</groupId>
+	<groupId>net.kanstren.tcptunnel</groupId>
 	<artifactId>tcptunnel</artifactId>
 	<version>1.0.0</version>
 </dependency>
 ```
 
-or direct [link](http://central.maven.org/maven2/net/kanstren/tcptunnel/1.0.0/tcptunnel-1.0.0.jar)
+or direct [link](http://central.maven.org/maven2/net/kanstren/tcptunnel/tcptunnel/1.0.0/tcptunnel-1.0.0.jar)
 
 License
 -------

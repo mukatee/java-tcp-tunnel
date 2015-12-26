@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>net.kanstren</groupId>
+  <groupId>net.kanstren.tcptunnel</groupId>
   <artifactId>tcptunnel</artifactId>
   <packaging>jar</packaging>
-  <version>0.1.0</version>
+  <version>1.0.0</version>
 
   <name>TCP Tunnel</name>
   <description>Sets up a forwarding TCP connection between two endpoints, collection all data passed between.</description>
@@ -18,13 +18,15 @@
   <licenses>
     <license>
       <name>MIT License</name>
-      <url>http://</url>
+      <url>https://github.com/mukatee/java-tcp-tunnel/blob/master/LICENSE</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
 
   <scm>
-    <url>https://github.com/mukatee/java-tcp-tunnel</url>
+    <url>git://git@github.com:mukatee/java-tcp-tunnel.git</url>
+    <connection>scm:git:git@github.com:mukatee/java-tcp-tunnel.git</connection>
+    <developerConnection>scm:git:git@github.com:mukatee/java-tcp-tunnel.git</developerConnection>
   </scm>
 
   <developers>
@@ -99,12 +101,12 @@
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
         <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.2</version>
+        <version>1.6.3</version>
         <extensions>true</extensions>
         <configuration>
           <serverId>sonatype-nexus-staging</serverId>
           <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-          <autoReleaseAfterClose>false</autoReleaseAfterClose>
+          <autoReleaseAfterClose>true</autoReleaseAfterClose>
         </configuration>
       </plugin>
       <plugin>
