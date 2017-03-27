@@ -59,7 +59,7 @@ public class Main implements Runnable {
         tunnels.add(tunnel);
       }
     } catch (IOException e) {
-      throw new RuntimeException("Error while trying to forward TCP with params:"+params);
+      throw new RuntimeException("Error while trying to forward TCP with params:"+params, e);
     }
   }
 

@@ -10,14 +10,14 @@ import java.io.PrintStream;
  * @author Teemu Kanstren.
  */
 public class StringConsoleLogger implements TCPObserver {
+  /** System specific line separator. */
+  public static String ln = System.getProperty("line.separator");
   /** For writing the logged data to console. */
   private final PrintStream stream;
   /** Prefix for printing. Allows separating up/down stream data when printing to same console. */
   private final String prefix;
   /** Character encoding id to use for decoding. Default is UTF8. */
   private final String encoding;
-  /** System dependent line separator. */
-  private static final String ln = System.getProperty("line.separator");
 
   /**
    * @param stream Write the collected trace (decoded strings) here.
@@ -33,6 +33,6 @@ public class StringConsoleLogger implements TCPObserver {
   @Override
   public void observe(byte[] buffer, int start, int count) throws IOException {
     String add = new String(buffer, start, count, encoding);
-    stream.print(prefix+":"+ln+add);
+    stream.print(ln+prefix+":"+ln+add);
   }
 }

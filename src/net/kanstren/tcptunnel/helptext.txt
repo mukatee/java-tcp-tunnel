@@ -8,10 +8,10 @@ Parameters:
   <remoteport> : The port on the <remotehost> to connect to and forward traffic when someone connects to <sourceport>.
 
 Options:
-  --buffersize <bytes> : Size of input buffer used to read data in bytes. Defaults to 8192 bytes.
-  --encoding <encoding> : Use the given encoding to decode strings. Default is UTF8.
-  --down <path> : Write remote->local data stream to file in <path>. Default is tcp_down. Suffix is logger dependent.
-  --up <path> : Write local->remote data stream to file in <path>. Default is tcp_up. Suffix is logger dependent.
+  --buffersize <bytes> : Size of input buffer used to read data in bytes. Defaults to %s bytes.
+  --encoding <encoding> : Use the given encoding to decode strings. Default is %s.
+  --down <path> : Write remote->local data stream to file in <path>. Default is %s. Suffix is logger dependent.
+  --up <path> : Write local->remote data stream to file in <path>. Default is %s. Suffix is logger dependent.
   --logger <type> : Add specified type of logger. Default is 'console-string'.
   --hex <true/false> : If using a console-bytes logger, defines whether to convert bytes to hex or int in printed lists.
   --help : Prints this help and exits.

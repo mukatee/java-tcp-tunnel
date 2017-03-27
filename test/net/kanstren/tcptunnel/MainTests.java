@@ -25,13 +25,19 @@ public class MainTests {
   public void noArgs() {
     Main.main(new String[] {});
     String output = TestUtils.getOutput();
-    assertEquals(output, TestUtils.getResource(MainTests.class, "expected_help.txt"), "Output msg with no parameters");
+    String expected = TestUtils.getResource(MainTests.class, "expected_help.txt")+"\n";
+    output = TestUtils.unifyLineSeparators(output, "\n");
+    expected = TestUtils.unifyLineSeparators(expected, "\n");
+    assertEquals(output, expected, "Output msg with no parameters");
   }
 
   @Test
   public void helpOnly() {
     Main.main(new String[] {"--help"});
     String output = TestUtils.getOutput();
-    assertEquals(output, TestUtils.getResource(MainTests.class, "expected_help.txt"), "Output msg with no parameters");
+    String expected = TestUtils.getResource(MainTests.class, "expected_help.txt")+"\n";
+    output = TestUtils.unifyLineSeparators(output, "\n");
+    expected = TestUtils.unifyLineSeparators(expected, "\n");
+    assertEquals(output, expected, "Output msg with no parameters");
   }
 }

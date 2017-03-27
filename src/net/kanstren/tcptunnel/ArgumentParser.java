@@ -1,6 +1,7 @@
 package net.kanstren.tcptunnel;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
  */
 public class ArgumentParser {
   /** System specific line separator. */
-  private static String ln = System.getProperty("line.separator");
+  public static String ln = System.getProperty("line.separator");
 
   /**
    * Parses the given arguments and options.
@@ -198,18 +199,6 @@ public class ArgumentParser {
     }
     return errors;
   }
-
-//  private String checkFileAcces(String path, String errors) {
-//    try {
-//      File file = new File(path);
-//      file.createNewFile();
-//      file.delete();
-//    } catch(IOException e) {
-//      errors += "Unable to create file: '"+path+"'."+ln;
-//    }
-//    return errors;
-//  }
-
   /**
    * Parse the actual parameters, meaning source (local) port, remote host and remote port.
    * Parameters are the ones not starting with '-'.
@@ -242,28 +231,9 @@ public class ArgumentParser {
    * @return The help text to show to user.
    */
   public static String help() {
-    return "A program for capturing data sent and received between two points. A proxy. A MITM. A whatever." + ln +
-            "Nothing fancy, just basic capture of data. No certificate handling etc." + ln + ln +
-            "Usage: java -jar tcptunnel.jar [options] <sourceport> <remotehost> <remoteport>" + ln +
-            "Parameters:" + ln +
-            "  <sourceport> : The port to bind and wait for connections on localhost." + ln +
-            "  <remotehost> : The host to connect to and forward traffic when someone connects to <localport>." + ln +
-            "  <remoteport> : The port on the <remotehost> to connect to and forward traffic when someone connects to <localport>." + ln +
-            ln +
-            "Options:" + ln +
-//            "" + ln +
-            "  --buffersize <bytes> : Size of input buffer used to read data in bytes. Defaults to " + Params.DEFAULT_BUFFER_SIZE + " bytes." + ln +
-            "  --encoding <encoding> : Use the given encoding to decode strings. Default is " + Params.DEFAULT_ENCONDING + "." + ln +
-            "  --down <path> : Write remote->local data stream to file in <path>. Default is " + Params.DEFAULT_DOWN_PATH + ". Suffix is logger dependent." + ln +
-            "  --up <path> : Write local->remote data stream to file in <path>. Default is " + Params.DEFAULT_UP_PATH + ". Suffix is logger dependent." + ln +
-            "  --logger <type> : Add specified type of logger. Default is 'console-string'." + ln +
-            "  --hex <true/false> : If using a console-bytes logger, defines whether to convert bytes to hex or int in printed lists." + ln +
-            "  --help : Prints this help and exits." + ln + ln +
-            "Loggers types:" + ln +
-            "  console-string: Prints logged data as strings (in defined encoding). For upstream to system.out and downstream to system.err." + ln +
-            "  console-bytes: Prints logged data as list of byte values. For upstream to system.out and for downstream to system.err." + ln +
-            "  file-string: Prints as strings (in defined encoding). To defined output files with .txt ending." + ln +
-            "  file-bytes: Writes logged data as list of byte values. To defined output files with .bytes ending.";
+    InputStream is = ArgumentParser.class.getResourceAsStream("helptext.txt");
+    String template = Utils.getResource(is);
+    return String.format(template, Params.DEFAULT_BUFFER_SIZE, Params.DEFAULT_ENCONDING, Params.DEFAULT_DOWN_PATH, Params.DEFAULT_UP_PATH);
   }
 
   /**

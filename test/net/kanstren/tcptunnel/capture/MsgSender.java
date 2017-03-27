@@ -6,7 +6,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.Socket;
 import java.net.URL;
+
+import static net.kanstren.tcptunnel.observers.StringConsoleLogger.ln;
 
 /**
  * @author Teemu Kanstren.
@@ -35,7 +38,23 @@ public class MsgSender {
       response.append(line);
     }
     conn.disconnect();
-    System.out.println("response:" + response.toString());
+    System.out.println(ln+"response:" + response.toString());
     return response.toString();
+  }
+
+  public static String send2(String host, int port, String msg) throws Exception {
+    return new String(send2(host, port, msg.getBytes()));
+  }
+
+  public static byte[] send2(String host, int port, byte[] bytes) throws Exception {
+    Socket socket = new Socket(host, port);
+    InputStream is = socket.getInputStream();
+    OutputStream os = socket.getOutputStream();
+    os.write(bytes);
+    byte[] buf = new byte[8092];
+    int read = is.read(buf);
+    byte[] result = new byte[read];
+    System.arraycopy(buf, 0, result, 0, read);
+    return result;
   }
 }

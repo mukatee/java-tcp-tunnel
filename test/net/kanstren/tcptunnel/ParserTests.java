@@ -21,13 +21,15 @@ public class ParserTests {
   public void helpText() {
     String help = ArgumentParser.help();
     help = TestUtils.unifyLineSeparators(help, "\n");
-    assertEquals(help, TestUtils.getResource(ParserTests.class, "expected_help.txt"), "Help text");
+    String expected = TestUtils.getResource(ParserTests.class, "expected_help.txt");
+    expected = TestUtils.unifyLineSeparators(expected, "\n");
+    assertEquals(help, expected, "Help text");
   }
 
   @DataProvider
   public Object[][] invalidDataProvider() {
     return new Object[][] {
-            {new String[] {}, "Too few arguments. Need 3, got 0: [].", "Error for missing arguments."},
+            {new String[] {}, "", "No args should print help and not give any errors."},
             {new String[] {"localhost", "1911"}, "Too few arguments. Need 3, got 2: [localhost, 1911].", "Error for missing arguments."},
             {new String[] {"localhost"}, "Too few arguments. Need 3, got 1: [localhost].", "Error for missing arguments."},
             {new String[] {"2222", "localhost", "1911", "extra"}, "Too many arguments. Need 3, got 4: [2222, localhost, 1911, extra].", "Error for missing arguments."},
