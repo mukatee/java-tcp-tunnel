@@ -3,6 +3,8 @@ Java TCP Tunnel
 
 A simple tool for capturing and inspecting data sent over a socket.
 
+Can also be used to mirror data sent to a port to two different destinations. Or to mirror data received from the tunnel to another host/port..
+
 Can be used either from command line or as a Java library.
 
 Why?
@@ -62,6 +64,24 @@ Log bytes as hexadecimal string to console:
 ```shell
 java -jar tcptunnel-0.1.0.jar 5566 www.github.com 80 --logger console-bytes --hex
 ```
+
+Mirror upstream data to another host/port in addition to forwarding through the tunnel:
+
+```shell
+java -jar tcptunnel-0.1.0.jar 6677 localhost 6667 --logger mirror-up --mirror-up-host localhost --mirror-up-port 6668
+```
+
+So the above listens for connections on port 6677, tunnels the bytes received on that port to "localhost:6667", and at the same time mirrors the same data also to "localhost:6668".
+The data received from the other end ("localhost:6667") is pushed back to the client connection that connected to 6677.
+The data received from the mirror server at "localhost:6668" is simply discarded.
+
+Same but for downstream mirroring:
+
+```shell
+java -jar tcptunnel-0.1.0.jar 6677 localhost 6667 --logger mirror-down --mirror-down-host localhost --mirror-up-port 6668
+```
+
+In this downstream mirror example the difference is that the data sent to "localhost:6668" is the data received back from forwarding target at "localhost:6667".
 
 For the options
 
