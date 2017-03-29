@@ -111,9 +111,9 @@ public class ParserTests {
     assertEquals(params.getDownFilePath(), expectedInPath, "Parsed path for remote->local data stream.");
     assertEquals(params.getUpFilePath(), expectedOutPath, "Parsed path for local->remote data stream.");
     assertEquals(params.getEncoding(), expectedEncoding, "Parsed encoding.");
-    List<TCPObserver> downers = params.getDownObservers();
+    List<TCPObserver> downers = params.createDownObservers();
     assertObserverType(downers, observer1, observer2, hex);
-    List<TCPObserver> uppers = params.getUpObservers();
+    List<TCPObserver> uppers = params.createUpObservers();
     assertObserverType(uppers, observer1, observer2, hex);
   }
   

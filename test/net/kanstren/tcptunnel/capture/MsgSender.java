@@ -57,4 +57,9 @@ public class MsgSender {
     System.arraycopy(buf, 0, result, 0, read);
     return result;
   }
+
+  public static void main(String[] args) throws Exception {
+    send("http://localhost:6677", "hello1");
+    send("http://localhost:6677", "hello2");
+  }
 }

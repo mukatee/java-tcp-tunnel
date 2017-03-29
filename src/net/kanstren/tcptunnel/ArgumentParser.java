@@ -123,6 +123,30 @@ public class ArgumentParser {
           //this is the path for storing the upstream traffic (from local port to remote host)
           params.setUpFilePath(option.value);
           break;
+        case "--mirror-down-host":
+          params.setMirrorDownHost(option.value);
+          break;
+        case "--mirror-down-port":
+          try {
+            int iValue = Integer.parseInt(option.value);
+            params.setMirrorDownPort(iValue);
+            if (iValue <= 1 || iValue > 65535) errors += "Invalid mirror-down port value. Should be between 1-65535, was: " + iValue + "." + ln;
+          } catch (NumberFormatException e) {
+            errors += "Invalid number for 'mirrordownport':" + option.value + "." + ln;
+          }
+          break;
+        case "--mirror-up-host":
+          params.setMirrorUpHost(option.value);
+          break;
+        case "--mirror-up-port":
+          try {
+            int iValue = Integer.parseInt(option.value);
+            params.setMirrorUpPort(iValue);
+            if (iValue <= 1 || iValue > 65535) errors += "Invalid mirror-up port value. Should be between 1-65535, was: " + iValue + "." + ln;
+          } catch (NumberFormatException e) {
+            errors += "Invalid number for 'mirrorupport':" + option.value + "." + ln;
+          }
+          break;
         case "--hex":
           //if using byte console logger, this setting changes printing the bytes from integer list to set of hex characters
           hex = true;
@@ -192,6 +216,14 @@ public class ArgumentParser {
         } catch (IOException e) {
           errors += "Unable to create byte file logger:"+e.getMessage();
         }
+        break;
+      case "mirror-up":
+        //write raw bytes as binary to another socket for upstream traffic
+        params.enableMirrorUpStreamLogger(params.getMirrorUpHost(), params.getMirrorUpPort());
+        break;
+      case "mirror-down":
+        //write raw bytes as binary to another socket for downstream traffic
+        params.enableMirrorDownStreamLogger(params.getMirrorDownHost(), params.getMirrorDownPort());
         break;
       default:
         //anything not processed above is considerd invalid

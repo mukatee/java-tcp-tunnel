@@ -3,6 +3,7 @@ package net.kanstren.tcptunnel;
 import net.kanstren.tcptunnel.observers.ByteConsoleLogger;
 import net.kanstren.tcptunnel.observers.ByteFileLogger;
 import net.kanstren.tcptunnel.observers.InMemoryLogger;
+import net.kanstren.tcptunnel.observers.SocketForwardingObserver;
 import net.kanstren.tcptunnel.observers.StringConsoleLogger;
 import net.kanstren.tcptunnel.observers.StringFileLogger;
 import net.kanstren.tcptunnel.observers.TCPObserver;
@@ -32,6 +33,14 @@ public class Params {
   private String remoteHost = null;
   /** Port on the remote host where all traffic from source port is forwarded. */
   private int remotePort = -1;
+  /** Remote host where to mirror all upstream traffic. */
+  private String mirrorUpHost = null;
+  /** Port on the upstream mirror host where to forward to. */
+  private int mirrorUpPort = -1;
+  /** Remote host where to mirror all downstream traffic. */
+  private String mirrorDownHost = null;
+  /** Port on the downstream mirror host where to forward to. */
+  private int mirrorDownPort = -1;
   /** Actual buffer size used to read/write sockets. */
   private int bufferSize = DEFAULT_BUFFER_SIZE;
   /** Path to the base filename where downstream logs are to be written. */
@@ -44,6 +53,8 @@ public class Params {
   private boolean print = true;
   /** Set of errors observed in parsing configuration parameters. Empty string if none. */
   private String errors = "";
+  private boolean mirrorUpEnabled = false;
+  private boolean mirrorDownEnabled = false;
   /** Observers (typically loggers) for downstream data. */
   private List<TCPObserver> observersDown = new ArrayList<>();
   /** Observers (typically loggers) for upstream data. */
@@ -195,6 +206,62 @@ public class Params {
   }
 
   /**
+   * @return The host to mirror upstream traffic to.
+   */
+  public String getMirrorUpHost() {
+    return mirrorUpHost;
+  }
+
+  /**
+   * @param mirrorUpHost The host to mirror upstream traffic to.
+   */
+  public void setMirrorUpHost(String mirrorUpHost) {
+    this.mirrorUpHost = mirrorUpHost;
+  }
+
+  /**
+   * @return The port on remote host to mirror upstream traffic to.
+   */
+  public int getMirrorUpPort() {
+    return mirrorUpPort;
+  }
+
+  /**
+   * @param mirrorUpPort The port on remote host to mirror upstream traffic to.
+   */
+  public void setMirrorUpPort(int mirrorUpPort) {
+    this.mirrorUpPort = mirrorUpPort;
+  }
+
+  /**
+   * @return The host to mirror downstream traffic to.
+   */
+  public String getMirrorDownHost() {
+    return mirrorDownHost;
+  }
+
+  /**
+   * @param mirrorDownHost The host to mirror downstream traffic to.
+   */
+  public void setMirrorDownHost(String mirrorDownHost) {
+    this.mirrorDownHost = mirrorDownHost;
+  }
+
+  /**
+   * @return The port on remote host to mirror downstream traffic to.
+   */
+  public int getMirrorDownPort() {
+    return mirrorDownPort;
+  }
+
+  /**
+   * @param mirrorDownPort The port on remote host to mirror downstream traffic to.
+   */
+  public void setMirrorDownPort(int mirrorDownPort) {
+    this.mirrorDownPort = mirrorDownPort;
+  }
+
+  /**
    * @return Whether to print some messages to console. Generally used for command-line interface.
    */
   public boolean isPrint() {
@@ -256,6 +323,26 @@ public class Params {
   }
 
   /**
+   * Enable logging by mirroring the uplink data to another IP address.
+   */
+  public void enableMirrorUpStreamLogger(String remoteHost, int remotePort) {
+    mirrorUpEnabled = true;
+    mirrorUpHost = remoteHost;
+    mirrorUpPort = remotePort;
+//    observersUp.add(new SocketForwardingObserver(remoteHost, remotePort));
+  }
+
+  /**
+   * Enable logging by mirroring the downlink data to another IP address.
+   */
+  public void enableMirrorDownStreamLogger(String remoteHost, int remotePort) {
+    mirrorDownEnabled = true;
+    mirrorDownHost = remoteHost;
+    mirrorDownPort = remotePort;
+//    observersDown.add(new SocketForwardingObserver(remoteHost, remotePort));
+  }
+
+  /**
    * Enable logging of byte values to console.
    * 
    * @param hex If true, strings of hexadecimal values are printed. Otherwise integer lists.
@@ -280,15 +367,21 @@ public class Params {
   /**
    * @return The list of configured downstream data observers (loggers).
    */
-  public List<TCPObserver> getDownObservers() {
-    return observersDown;
+  public List<TCPObserver> createDownObservers() {
+    List<TCPObserver> result = new ArrayList<>();
+    result.addAll(observersDown);
+    if (mirrorDownEnabled) result.add(new SocketForwardingObserver(mirrorDownHost, mirrorDownPort));
+    return result;
   }
 
   /**
    * @return The list of configured upstream data observers (loggers).
    */
-  public List<TCPObserver> getUpObservers() {
-    return observersUp;
+  public List<TCPObserver> createUpObservers() {
+    List<TCPObserver> result = new ArrayList<>();
+    result.addAll(observersUp);
+    if (mirrorUpEnabled) result.add(new SocketForwardingObserver(mirrorUpHost, mirrorUpPort));
+    return result;
   }
 
   /**

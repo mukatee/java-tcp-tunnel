@@ -37,8 +37,8 @@ public class Forwarder extends Thread {
     this.is = is;
     this.os = os;
     this.params = params;
-    if (up) this.observers = params.getUpObservers();
-    else this.observers = params.getDownObservers();
+    if (up) this.observers = params.createUpObservers();
+    else this.observers = params.createDownObservers();
   }
 
   /**
@@ -61,6 +61,8 @@ public class Forwarder extends Thread {
     } catch (IOException e) {
       // Read/write failed --> connection is broken
     }
+//    params.getUpObservers().forEach(TCPObserver::connectionBroken);
+//    params.getDownObservers().forEach(TCPObserver::connectionBroken);
     //Notify the parent tunnel that the connection is broken
     parent.connectionBroken();
   }

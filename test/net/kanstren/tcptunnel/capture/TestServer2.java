@@ -1,13 +1,7 @@
 package net.kanstren.tcptunnel.capture;
 
-import net.kanstren.tcptunnel.observers.TCPObserver;
-
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -16,20 +10,26 @@ import java.net.Socket;
  */
 public class TestServer2 implements Runnable {
   private final int port;
-  private final byte[] bytes;
+  private final byte[] bytesToSend;
+  private final byte[] receiveBuffer = new byte[8192];
+  private int bytesReceived = 0;
 
   public TestServer2(int port, String msg) {
     this.port = port;
-    this.bytes = msg.getBytes();
+    this.bytesToSend = msg.getBytes();
   }
 
   public TestServer2(int port, byte[] bytes) {
     this.port = port;
-    this.bytes = bytes;
+    this.bytesToSend = bytes;
   }
 
   public void start() throws Exception {
     new Thread(this).start();
+  }
+
+  public String getReceiveString() {
+    return new String(receiveBuffer, 0, bytesReceived);
   }
 
   @Override
@@ -47,10 +47,10 @@ public class TestServer2 implements Runnable {
 
     InputStream is = serverSocket.getInputStream();
     OutputStream os = serverSocket.getOutputStream();
-    byte[] buffer = new byte[8192];
-    int bytesRead = is.read(buffer);
+//    byte[] buffer = new byte[8192];
+    bytesReceived = is.read(receiveBuffer);
 
-    os.write(bytes, 0, bytes.length);
+    os.write(bytesToSend, 0, bytesToSend.length);
     os.flush();
     serverSocket.close();
     server.close();
