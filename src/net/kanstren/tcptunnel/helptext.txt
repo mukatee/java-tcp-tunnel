@@ -12,6 +12,10 @@ Options:
   --encoding <encoding> : Use the given encoding to decode strings. Default is %s.
   --down <path> : Write remote->local data stream to file in <path>. Default is %s. Suffix is logger dependent.
   --up <path> : Write local->remote data stream to file in <path>. Default is %s. Suffix is logger dependent.
+  --mirror-up-host <host>: Configures up-stream mirroring forwarder target host name/ip.
+  --mirror-up-port <port>: Configures up-stream mirroring forwarder target port.
+  --mirror-down-host <host>: Configures down-stream mirroring forwarder target host name/ip.
+  --mirror-down-port <port>: Configures down-stream mirroring forwarder target port.
   --logger <type> : Add specified type of logger. Default is 'console-string'.
   --hex <true/false> : If using a console-bytes logger, defines whether to convert bytes to hex or int in printed lists.
   --help : Prints this help and exits.
@@ -21,3 +25,6 @@ Loggers types:
   console-bytes: Prints logged data as list of byte values. For upstream to system.out and for downstream to system.err.
   file-string: Prints as strings (in defined encoding). To defined output files with .txt ending.
   file-bytes: Writes logged data as list of byte values. To defined output files with .bytes ending.
+  mirror-up: Forwards the upstream data to given address as configured by <mirror-up-host> and <mirror-up-port>
+  mirror-down: Forwards the downstream data to given address as configured by <mirror-down-host> and <mirror-down-port>
+
