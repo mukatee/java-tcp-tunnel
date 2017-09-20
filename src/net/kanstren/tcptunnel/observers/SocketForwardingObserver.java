@@ -1,5 +1,7 @@
 package net.kanstren.tcptunnel.observers;
 
+import net.kanstren.tcptunnel.Params;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -28,10 +30,16 @@ public class SocketForwardingObserver implements TCPObserver {
   private Socket socket = null;
   /** The outputstream for the socket. Kept here since I am not sure how well the socket supports repeatedly calling getOutputStream() and tossing the reference. */
   private OutputStream os;
+  /** The parameters this is set up with. Mainly to provide better logging. */
+  private Params params;
+  /** Actual stream source address, mostly for logging purposes. */
+  private String sourceAddr;
 
-  public SocketForwardingObserver(String remoteHost, int remotePort) {
+  public SocketForwardingObserver(Params params, String remoteHost, int remotePort, String sourceAddr) {
+    this.params = params;
     this.remoteHost = remoteHost;
     this.remotePort = remotePort;
+    this.sourceAddr = sourceAddr;
   }
 
   /**
@@ -61,7 +69,7 @@ public class SocketForwardingObserver implements TCPObserver {
   public synchronized void observe(byte[] buffer, int start, int count) throws IOException {
     Sucker sucker = null;
     if (socket == null) {
-//      System.out.println("No socket found. Creating one for mirror stream..");
+      System.out.println("Creating mirror stream to "+remoteHost+":"+remotePort+". Source = "+sourceAddr);
       socket = new Socket(remoteHost, remotePort);
       os = socket.getOutputStream();
       //create a separate thread to suck in all the input from the remote host receiving the data.

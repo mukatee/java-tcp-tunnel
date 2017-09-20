@@ -2,11 +2,14 @@ package net.kanstren.tcptunnel.forwarder;
 
 import net.kanstren.tcptunnel.Main;
 import net.kanstren.tcptunnel.Params;
+import net.kanstren.tcptunnel.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Creates a TCP tunnel between two endpoints via two Forwarder instances.
@@ -14,6 +17,7 @@ import java.net.Socket;
  * Any error on either socket causes the whole tunnel (both sockets) to be closed.
  */
 public class TCPTunnel extends Thread {
+  private SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MMM.dd HH:mm:ss");
   /** Configuration parameters. */
   private final Params params;
   /** Local endpoint for the tunnel. */
@@ -39,6 +43,7 @@ public class TCPTunnel extends Thread {
    * Connects to the remote host and starts bidirectional forwarding (the tunnel).
    */
   public void run() {
+    String dateStr = sdf.format(new Date());
     try {
       // Connect to the destination server
       serverSocket = new Socket(params.getRemoteHost(), params.getRemotePort());
@@ -55,14 +60,27 @@ public class TCPTunnel extends Thread {
 
       // Start forwarding data between server and client
       active = true;
-      Forwarder clientForward = new Forwarder(this, clientIn, serverOut, params, true);
+      String clientAddr = toStr(localSocket);
+      String serverAddr = toStr(serverSocket);
+      String hummanClientAddr = Utils.mapAddrToHumanReadable(clientAddr);
+      String hummanServerAddr = Utils.mapAddrToHumanReadable(serverAddr);
+      clientAddr = clientAddr+" ("+hummanClientAddr+")";
+      serverAddr = serverAddr+" ("+hummanServerAddr+")";
+      Forwarder clientForward = new Forwarder(this, clientIn, serverOut, params, true, clientAddr);
       clientForward.start();
-      Forwarder serverForward = new Forwarder(this, serverIn, clientOut, params, false);
+      Forwarder serverForward = new Forwarder(this, serverIn, clientOut, params, false, serverAddr);
       serverForward.start();
 
-      if (params.isPrint()) System.out.println("TCP Forwarding " + toStr(localSocket) + " <--> " + toStr(serverSocket));
+      if (params.isPrint()) {
+        System.out.println(dateStr+": TCP Forwarding " + clientAddr + " <--> " + serverAddr);
+      }
     } catch (IOException ioe) {
-      if (params.isPrint()) System.err.println("Failed to connect to remote host (" + params.getRemoteHost() + ":" + params.getRemotePort()+")");
+      if (params.isPrint()) {
+        String remoteAddr = params.getRemoteHost() + ":" + params.getRemotePort();
+        String humanRemoteAddr = Utils.mapAddrToHumanReadable(remoteAddr);
+        remoteAddr = remoteAddr + " ("+humanRemoteAddr+")";
+        System.err.println(dateStr + ": Failed to connect to remote host (" + remoteAddr + ")");
+      }
       connectionBroken();
     }
   }
@@ -97,7 +115,8 @@ public class TCPTunnel extends Thread {
     } catch (Exception e) {}
 
     if (active) {
-      if (params.isPrint()) System.out.println("TCP Forwarding " + toStr(localSocket) + " <--> " + toStr(serverSocket) + " stopped.");
+      String dateStr = sdf.format(new Date());
+      if (params.isPrint()) System.out.println(dateStr+": TCP Forwarding " + toStr(localSocket) + " <--> " + toStr(serverSocket) + " stopped.");
       active = false;
     }
     parent.closed(this);

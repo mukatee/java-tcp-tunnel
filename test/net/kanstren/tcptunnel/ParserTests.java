@@ -111,9 +111,9 @@ public class ParserTests {
     assertEquals(params.getDownFilePath(), expectedInPath, "Parsed path for remote->local data stream.");
     assertEquals(params.getUpFilePath(), expectedOutPath, "Parsed path for local->remote data stream.");
     assertEquals(params.getEncoding(), expectedEncoding, "Parsed encoding.");
-    List<TCPObserver> downers = params.createDownObservers();
+    List<TCPObserver> downers = params.createDownObservers("test");
     assertObserverType(downers, observer1, observer2, hex);
-    List<TCPObserver> uppers = params.createUpObservers();
+    List<TCPObserver> uppers = params.createUpObservers("test");
     assertObserverType(uppers, observer1, observer2, hex);
   }
   
@@ -130,5 +130,15 @@ public class ParserTests {
     }
     assertTrue(found1, "Could not find expected observer type: "+expected1+" in "+observers);
     assertTrue(found2, "Could not find expected observer type: "+expected2+" in "+observers);
+  }
+
+  @Test
+  public void humanReadableTest() {
+    String human = Utils.mapAddrToHumanReadable("8.8.8.8:2222");
+    assertEquals(human, "Google DNS", "Human readable conversion");
+    human = Utils.mapAddrToHumanReadable("127.0.0.1:22222");
+    assertEquals(human, "localhost", "Human readable conversion");
+    human = Utils.mapAddrToHumanReadable("1.1.1.1:22222");
+    assertEquals(human, "unknown", "Human readable conversion");
   }
 }

@@ -31,14 +31,15 @@ public class Forwarder extends Thread {
    * @param os Outputstream for socket 2, to connect to the inputstream.
    * @param params Configuration parameters.
    * @param up If true, we pass all data going through to upstream observers.
+   * @param sourceAddr Source address of the stream (up- or down-stream). For logging purposes...
    */
-  public Forwarder(TCPTunnel parent, InputStream is, OutputStream os, Params params, boolean up) {
+  public Forwarder(TCPTunnel parent, InputStream is, OutputStream os, Params params, boolean up, String sourceAddr) {
     this.parent = parent;
     this.is = is;
     this.os = os;
     this.params = params;
-    if (up) this.observers = params.createUpObservers();
-    else this.observers = params.createDownObservers();
+    if (up) this.observers = params.createUpObservers(sourceAddr);
+    else this.observers = params.createDownObservers(sourceAddr);
   }
 
   /**

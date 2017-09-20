@@ -5,7 +5,7 @@
   <groupId>net.kanstren.tcptunnel</groupId>
   <artifactId>tcptunnel</artifactId>
   <packaging>jar</packaging>
-  <version>1.1.0</version>
+  <version>1.1.2</version>
 
   <name>TCP Tunnel</name>
   <description>Sets up a forwarding TCP connection between two endpoints, collection all data passed between.</description>

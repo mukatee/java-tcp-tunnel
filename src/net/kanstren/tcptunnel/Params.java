@@ -365,22 +365,26 @@ public class Params {
   }
 
   /**
+   * @param sourceAddr Stream actual source address, for logging purposes mainly.
+   *
    * @return The list of configured downstream data observers (loggers).
    */
-  public List<TCPObserver> createDownObservers() {
+  public List<TCPObserver> createDownObservers(String sourceAddr) {
     List<TCPObserver> result = new ArrayList<>();
     result.addAll(observersDown);
-    if (mirrorDownEnabled) result.add(new SocketForwardingObserver(mirrorDownHost, mirrorDownPort));
+    if (mirrorDownEnabled) result.add(new SocketForwardingObserver(this, mirrorDownHost, mirrorDownPort, sourceAddr));
     return result;
   }
 
   /**
+   * @param sourceAddr Stream actual source address, for logging purposes mainly.
+   *
    * @return The list of configured upstream data observers (loggers).
    */
-  public List<TCPObserver> createUpObservers() {
+  public List<TCPObserver> createUpObservers(String sourceAddr) {
     List<TCPObserver> result = new ArrayList<>();
     result.addAll(observersUp);
-    if (mirrorUpEnabled) result.add(new SocketForwardingObserver(mirrorUpHost, mirrorUpPort));
+    if (mirrorUpEnabled) result.add(new SocketForwardingObserver(this, mirrorUpHost, mirrorUpPort, sourceAddr));
     return result;
   }
 

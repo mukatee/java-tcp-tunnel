@@ -59,7 +59,7 @@ public class MsgSender {
   }
 
   public static void main(String[] args) throws Exception {
-    send("http://localhost:6677", "hello1");
-    send("http://localhost:6677", "hello2");
+    send2("localhost", 6666, "hello1");
+//    send2("localhost", 6666, "hello2");
   }
 }
