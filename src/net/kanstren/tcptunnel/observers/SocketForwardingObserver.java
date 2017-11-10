@@ -5,6 +5,9 @@ import net.kanstren.tcptunnel.Params;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.Socket;
 
 /**
@@ -28,6 +31,8 @@ public class SocketForwardingObserver implements TCPObserver {
   /** Socket connection to the remote host. Redone if/when the connection drops.
    * Needs to be at class level as the observe() method gets called multiple times for big streams and we want to keep the mirror stream open as well in those cases. */
   private Socket socket = null;
+  DatagramSocket udpSocket = null;
+
   /** The outputstream for the socket. Kept here since I am not sure how well the socket supports repeatedly calling getOutputStream() and tossing the reference. */
   private OutputStream os;
   /** The parameters this is set up with. Mainly to provide better logging. */
@@ -67,6 +72,16 @@ public class SocketForwardingObserver implements TCPObserver {
    */
   @Override
   public synchronized void observe(byte[] buffer, int start, int count) throws IOException {
+    if(params.isUdptun() || params.isDns()){
+      if(udpSocket == null || udpSocket.isClosed()) udpSocket = new DatagramSocket();
+      DatagramPacket packet = new DatagramPacket(buffer,start,count);
+      packet.setAddress(InetAddress.getByName(remoteHost));
+      packet.setPort(remotePort);
+//      udpSocket.setSoTimeout(60000);
+      udpSocket.send(packet);
+      return;
+    }
+
     Sucker sucker = null;
     if (socket == null) {
       System.out.println("Creating mirror stream to "+remoteHost+":"+remotePort+". Source = "+sourceAddr);

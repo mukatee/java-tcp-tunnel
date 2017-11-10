@@ -1,10 +1,11 @@
 package net.kanstren.tcptunnel;
 
 import net.kanstren.tcptunnel.forwarder.TCPTunnel;
+import net.kanstren.tcptunnel.forwarder.DNSTunnel;
+import net.kanstren.tcptunnel.forwarder.UDPTunnel;
 
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class Main implements Runnable {
   /** List of active tunnels. */
   private final List<TCPTunnel> tunnels = new ArrayList<>();
   private ServerSocket serverSocket;
+  private DatagramSocket udpServerSocket;
 
   public Main(Params params) {
     this.params = params;
@@ -50,16 +52,37 @@ public class Main implements Runnable {
 
   @Override
   public void run() {
-    try {
-      serverSocket =  new ServerSocket(params.getSourcePort());
-      while (shouldRun) {
-        Socket clientSocket = serverSocket.accept();
-        TCPTunnel tunnel = new TCPTunnel(params, clientSocket, this);
+    if (params.isDns()) {
+      try {
+        udpServerSocket = new DatagramSocket(params.getSourcePort());
+        DNSTunnel tunnel = new DNSTunnel(params, udpServerSocket);
         tunnel.start();
-        tunnels.add(tunnel);
+      } catch (SocketException e) {
+        e.printStackTrace();
       }
-    } catch (IOException e) {
-      throw new RuntimeException("Error while trying to forward TCP with params:"+params, e);
+    } else if(params.isUdptun()){
+      try {
+        udpServerSocket = new DatagramSocket(params.getSourcePort());
+        UDPTunnel tunnel = new UDPTunnel(params, udpServerSocket);
+        tunnel.start();
+      } catch (SocketException e) {
+        e.printStackTrace();
+      }
+
+    } else {
+      try {
+        serverSocket = new ServerSocket(params.getSourcePort());
+        while (shouldRun) {
+          Socket clientSocket = serverSocket.accept();
+          TCPTunnel tunnel = new TCPTunnel(params, clientSocket, this);
+          tunnel.start();
+          tunnels.add(tunnel);
+        }
+      } catch (IOException e) {
+        throw new RuntimeException("Error while trying to forward TCP with params:" + params, e);
+      }
+
+
     }
   }
 
