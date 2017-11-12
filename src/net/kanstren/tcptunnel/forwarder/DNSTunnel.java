@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by Administrator on 2017/11/9.
+ * Created by AlexZhuo on 2017/11/9.
  */
 public class DNSTunnel extends Thread{
 
@@ -44,15 +44,15 @@ public class DNSTunnel extends Thread{
                 packet.setData(buffer);
                 packet.setLength(buffer.length);
                 clientSocket.receive(packet);
-                System.out.println("get new UDP request,length=="+packet.getLength());
                 active = true;
-                String result1 = new String(packet.getData(), 0, packet.getLength(), "ASCII");
                 InetAddress sourceAddress = packet.getAddress();
                 int srcPort = packet.getPort();
                 if (params.isPrint()) {
+                    System.out.println("\n\n\nget new UDP request,length=="+packet.getLength());
+                    String result1 = new String(packet.getData(), 0, packet.getLength(), "ASCII");
                     System.out.println(dateStr+": UDP Forwarding " + sourceAddress+":"+srcPort + " <--> " + address.getHostAddress()+":"+params.getRemotePort());
+                    System.out.println("request content is ：："+result1);
                 }
-                System.out.println("request content is ：："+result1);
                 //send client request to server
                 packet.setPort(params.getRemotePort());
                 packet.setAddress(address);

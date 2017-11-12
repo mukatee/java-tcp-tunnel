@@ -60,7 +60,7 @@ Forward local UDP port 7000 to remote ip port 9999 , to make a P2P tunnel on UDP
 java -jar tcptunnel-0.1.0.jar 7000 xxx.xxx.xxx.xxx 9999 --udp-tun
 ```
 
-Notice: You need to create seperate tunnels for every client program and use different local ports, or the forwarder could not determine which client to delivery the responce packet.
+Notice: Default udp time out is 30s.
 
 
 Same as above but log to a file.
@@ -93,7 +93,7 @@ Mirror upstream data to another host/port in addition to forwarding through the 
 java -jar tcptunnel-0.1.0.jar 6677 localhost 6667 --logger mirror-up --mirror-up-host localhost --mirror-up-port 6668
 ```
 
-Mirro datagram socket (UDP), support upstream and downstream
+Mirror datagram socket (UDP), support upstream and downstream
 
 ```shell
 java -jar tcptunnel-0.1.0.jar 53 8.8.8.8 53 --udp-dns --logger mirror-up --mirror-up-host localhost --mirror-up-port 6668

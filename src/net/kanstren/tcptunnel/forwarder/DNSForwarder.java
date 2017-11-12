@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by Administrator on 2017/11/9.
+ * Created by AlexZhuo on 2017/11/9.
  */
 public class DNSForwarder extends Thread{
     private InetAddress clientAddr;
@@ -36,7 +36,6 @@ public class DNSForwarder extends Thread{
      * @param clientAddr
      * @param clientPort
      * @param params
-     * @param tunnels
      */
     public DNSForwarder(DatagramPacket packet, DatagramSocket clientSocket, InetAddress clientAddr, int clientPort, Params params){
         try {
@@ -63,15 +62,14 @@ public class DNSForwarder extends Thread{
             serverSocket.send(sendData);
             if(serverSocket.isClosed())return;
             serverSocket.receive(response);
-            String dateStr = sdf.format(new Date());
-            String result = new String(response.getData(), 0, response.getLength(), "ASCII");
             if (params.isPrint()) {
+                String dateStr = sdf.format(new Date());
+                String result = new String(response.getData(), 0, response.getLength(), "ASCII");
                 System.out.println(dateStr+": UDP Receiving "
                         + response.getAddress().getHostAddress()+":"+response.getPort() + " <--> "
                         + clientAddr+":"+clientPort);
+                System.out.println("remote server response length="+response.getLength()+"\n"+result);
             }
-            System.out.println("remote server response length="+response.getLength()+"\n"+result);
-            System.out.println("\n\n");
             //send the response from remote server to client
             response.setAddress(clientAddr);
             response.setPort(clientPort);
