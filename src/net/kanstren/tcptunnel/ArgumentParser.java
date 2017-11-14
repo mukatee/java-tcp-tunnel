@@ -44,6 +44,14 @@ public class ArgumentParser {
           options.add(new Option("--help", "true"));
           continue;
         }
+        if (arg.equals("--udp-dns")) {
+          options.add(new Option("--udp-dns", "true"));
+          continue;
+        }
+        if (arg.equals("--udp-tun")) {
+          options.add(new Option("--udp-tun", "true"));
+          continue;
+        }
         if (args.length <= i + 1) {
           //all options coming this far should have a value. otherwise it is an error.
           errors += "No value given for option " + arg + ". Please provide one." + ln;
@@ -160,6 +168,14 @@ public class ArgumentParser {
           //increase the number of loggers found so we know later if we need to create the default one or not
           loggers++;
           //handle creation in round 2
+          break;
+        case "--udp-dns":
+          //increase the number of loggers found so we know later if we need to create the default one or not
+          params.setDns(true);
+          break;
+        case "--udp-tun":
+          //increase the number of loggers found so we know later if we need to create the default one or not
+          params.setUdptun(true);
           break;
         default:
           //anything not processed above is invalid..

@@ -1,4 +1,4 @@
-Java TCP Tunnel
+Java TCP/UDP Tunnel
 ===============
 
 A simple tool for capturing and inspecting data sent over a socket.
@@ -41,6 +41,28 @@ curl localhost:5566 --header 'Host: www.github.com'
 
 Note the need to fix the "Host" header for a regular HTTP website request.
 
+Forward local UDP port 53 to 8.8.8.8 port 53 , to resolve some DNS on local ,use symmetric udp protocal
+
+```shell
+java -jar tcptunnel-0.1.0.jar 53 8.8.8.8 53 --udp-dns
+```
+
+Test the DNS forwarder like this:
+
+```shell
+nslookup www.google.com 127.0.0.1
+```
+Notice: Using --udp-dns mode you need to make sure when you send a packet to server you will soon receive a packet from it, like the DNS request, or the socket will be out-of-time or closed .
+
+Forward local UDP port 7000 to remote ip port 9999 , to make a P2P tunnel on UDP protocal ,like OpenVPN on UDP
+
+```shell
+java -jar tcptunnel-0.1.0.jar 7000 xxx.xxx.xxx.xxx 9999 --udp-tun
+```
+
+Notice: Default udp time out is 30s.
+
+
 Same as above but log to a file.
 
 ```shell
@@ -71,6 +93,12 @@ Mirror upstream data to another host/port in addition to forwarding through the 
 java -jar tcptunnel-0.1.0.jar 6677 localhost 6667 --logger mirror-up --mirror-up-host localhost --mirror-up-port 6668
 ```
 
+Mirror datagram socket (UDP), support upstream and downstream
+
+```shell
+java -jar tcptunnel-0.1.0.jar 53 8.8.8.8 53 --udp-dns --logger mirror-up --mirror-up-host localhost --mirror-up-port 6668
+```
+
 So the above listens for connections on port 6677, tunnels the bytes received on that port to "localhost:6667", and at the same time mirrors the same data also to "localhost:6668".
 The data received from the other end ("localhost:6667") is pushed back to the client connection that connected to 6677.
 The data received from the mirror server at "localhost:6668" is simply discarded.
@@ -78,7 +106,7 @@ The data received from the mirror server at "localhost:6668" is simply discarded
 Same but for downstream mirroring:
 
 ```shell
-java -jar tcptunnel-0.1.0.jar 6677 localhost 6667 --logger mirror-down --mirror-down-host localhost --mirror-up-port 6668
+java -jar tcptunnel-0.1.0.jar 6677 localhost 6667 --logger mirror-down --mirror-down-host localhost --mirror-down-port 6668
 ```
 
 In this downstream mirror example the difference is that the data sent to "localhost:6668" is the data received back from forwarding target at "localhost:6667".
