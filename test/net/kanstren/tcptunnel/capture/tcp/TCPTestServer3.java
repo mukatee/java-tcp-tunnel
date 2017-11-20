@@ -1,5 +1,6 @@
-package net.kanstren.tcptunnel.capture;
+package net.kanstren.tcptunnel.capture.tcp;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
@@ -8,25 +9,25 @@ import java.net.Socket;
 /**
  * @author Teemu Kanstren.
  */
-public class TestServer2 implements Runnable {
+public class TCPTestServer3 implements Runnable {
   private final int port;
   private final byte[] bytesToSend;
   private final byte[] receiveBuffer = new byte[8192];
   private int bytesReceived = 0;
 
-  public TestServer2(int port, String msg) {
+  public TCPTestServer3(int port, String msg) {
     this.port = port;
     this.bytesToSend = msg.getBytes();
   }
 
-  public TestServer2(int port, byte[] bytes) {
+  public TCPTestServer3(int port, byte[] bytes) {
     this.port = port;
     this.bytesToSend = bytes;
   }
 
   public static void main(String[] args) throws Exception {
     byte[] dltestBytes = {0x02, 0x00, 0x01};
-    TestServer2 server = new TestServer2(Integer.parseInt(args[0]), dltestBytes);
+    TCPTestServer3 server = new TCPTestServer3(Integer.parseInt(args[0]), dltestBytes);
     server.start();
   }
 
@@ -49,16 +50,23 @@ public class TestServer2 implements Runnable {
 
   public void runrun() throws Exception {
     ServerSocket server = new ServerSocket(port);
-    Socket serverSocket = server.accept();
-
-    InputStream is = serverSocket.getInputStream();
-    OutputStream os = serverSocket.getOutputStream();
+    while (true) {
+      try {
+        Socket serverSocket = server.accept();
+        InputStream is = serverSocket.getInputStream();
+        OutputStream os = serverSocket.getOutputStream();
 //    byte[] buffer = new byte[8192];
-    bytesReceived = is.read(receiveBuffer);
+        bytesReceived = is.read(receiveBuffer);
+        System.out.println("received: " + bytesReceived + " bytes. Sending response.");
 
-    os.write(bytesToSend, 0, bytesToSend.length);
-    os.flush();
-    serverSocket.close();
-    server.close();
+        os.write(bytesToSend, 0, bytesToSend.length);
+        os.flush();
+        System.out.println("response sent");
+        serverSocket.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+//    server.close();
   }
 }

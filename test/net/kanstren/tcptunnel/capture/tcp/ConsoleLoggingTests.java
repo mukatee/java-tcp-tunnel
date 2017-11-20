@@ -1,10 +1,8 @@
-package net.kanstren.tcptunnel.capture;
+package net.kanstren.tcptunnel.capture.tcp;
 
 import net.kanstren.tcptunnel.Main;
-import net.kanstren.tcptunnel.MainTests;
 import net.kanstren.tcptunnel.Params;
 import net.kanstren.tcptunnel.PortManager;
-import net.kanstren.tcptunnel.observers.InMemoryLogger;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -31,7 +29,7 @@ public class ConsoleLoggingTests {
     //create a test server to give us a page to request
     int serverPort = PortManager.port();
     int proxyPort = PortManager.port();
-    TestServer2 server = new TestServer2(serverPort, "console test1");
+    TCPTestServer2 server = new TCPTestServer2(serverPort, "console test1");
     server.start();
     //configure the tunnel to accept connections on port 5598 and forward them to localhost:5599
     Params params = new Params(proxyPort, "localhost", serverPort);
@@ -40,7 +38,7 @@ public class ConsoleLoggingTests {
     Main main = new Main(params);
     main.start();
     //send a test request to get some data in the tunnel
-    String response = MsgSender.send2("localhost", proxyPort, "hi there");
+    String response = TCPMsgSender.send2("localhost", proxyPort, "hi there");
     //check we got the correct response from the server
     assertEquals(response, "console test1", "Response content");
 
@@ -59,7 +57,7 @@ public class ConsoleLoggingTests {
     //create a test server to give us a page to request
     int serverPort = PortManager.port();
     int proxyPort = PortManager.port();
-    TestServer2 server = new TestServer2(serverPort, "hex console test");
+    TCPTestServer2 server = new TCPTestServer2(serverPort, "hex console test");
     server.start();
     //configure the tunnel to accept connections on port 5598 and forward them to localhost:5599
     Params params = new Params(proxyPort, "localhost", serverPort);
@@ -68,7 +66,7 @@ public class ConsoleLoggingTests {
     Main main = new Main(params);
     main.start();
     //send a test request to get some data in the tunnel
-    String response = MsgSender.send2("localhost", proxyPort, "hi there hex boy");
+    String response = TCPMsgSender.send2("localhost", proxyPort, "hi there hex boy");
     //check we got the correct response from the server
     assertEquals(response, "hex console test", "Response content");
 
@@ -87,7 +85,7 @@ public class ConsoleLoggingTests {
     int serverPort = PortManager.port();
     int proxyPort = PortManager.port();
     //create a test server to give us a page to request
-    TestServer2 server = new TestServer2(serverPort, "console string test\n");
+    TCPTestServer2 server = new TCPTestServer2(serverPort, "console string test\n");
     server.start();
     //configure the tunnel to accept connections on port 5598 and forward them to localhost:5599
     Params params = new Params(proxyPort, "localhost", serverPort);
@@ -96,7 +94,7 @@ public class ConsoleLoggingTests {
     Main main = new Main(params);
     main.start();
     //send a test request to get some data in the tunnel
-    String response = MsgSender.send2("localhost", proxyPort, "hi there");
+    String response = TCPMsgSender.send2("localhost", proxyPort, "hi there");
     //check we got the correct response from the server
     assertEquals(response, "console string test\n", "Response content");
 

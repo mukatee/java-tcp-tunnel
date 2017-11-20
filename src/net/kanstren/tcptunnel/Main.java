@@ -34,7 +34,7 @@ public class Main implements Runnable {
     if (params.getErrors().length() > 0) {
       System.err.println(params.getErrors());
     }
-    //if the parametesr do not parse correctly or something required is missing, exit
+    //if the parameters do not parse correctly or something required is missing, exit
     if (!params.shouldRun()) {
       return;
     }
@@ -52,23 +52,22 @@ public class Main implements Runnable {
 
   @Override
   public void run() {
-    if (params.isDns()) {
+    if (params.isDNS()) {
       try {
         udpServerSocket = new DatagramSocket(params.getSourcePort());
         DNSTunnel tunnel = new DNSTunnel(params, udpServerSocket);
         tunnel.start();
       } catch (SocketException e) {
-        e.printStackTrace();
+        throw new RuntimeException("Error while trying to forward DNS with params:" + params, e);
       }
-    } else if(params.isUdptun()){
+    } else if(params.isUDP()){
       try {
         udpServerSocket = new DatagramSocket(params.getSourcePort());
         UDPTunnel tunnel = new UDPTunnel(params, udpServerSocket);
         tunnel.start();
       } catch (SocketException e) {
-        e.printStackTrace();
+        throw new RuntimeException("Error while trying to forward UDP with params:" + params, e);
       }
-
     } else {
       try {
         serverSocket = new ServerSocket(params.getSourcePort());
@@ -81,8 +80,6 @@ public class Main implements Runnable {
       } catch (IOException e) {
         throw new RuntimeException("Error while trying to forward TCP with params:" + params, e);
       }
-
-
     }
   }
 

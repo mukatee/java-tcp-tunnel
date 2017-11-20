@@ -55,26 +55,8 @@ public class Params {
   private String errors = "";
   private boolean mirrorUpEnabled = false;
   private boolean mirrorDownEnabled = false;
-
-  public boolean isDns() {
-    return dns;
-  }
-
-  public void setDns(boolean dns) {
-    this.dns = dns;
-  }
-
   private boolean dns = false;
-  private boolean udptun = false;
-
-  public boolean isUdptun() {
-    return udptun;
-  }
-
-  public void setUdptun(boolean udptun) {
-    this.udptun = udptun;
-  }
-
+  private boolean udp = false;
   /** Observers (typically loggers) for downstream data. */
   private List<TCPObserver> observersDown = new ArrayList<>();
   /** Observers (typically loggers) for upstream data. */
@@ -106,6 +88,23 @@ public class Params {
   }
 
   public Params() {
+  }
+
+  public boolean isDNS() {
+    return dns;
+  }
+
+  public void setDns(boolean dns) {
+    this.dns = dns;
+  }
+
+
+  public boolean isUDP() {
+    return udp;
+  }
+
+  public void setUDP(boolean udp) {
+    this.udp = udp;
   }
 
   /**

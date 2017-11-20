@@ -72,7 +72,7 @@ public class SocketForwardingObserver implements TCPObserver {
    */
   @Override
   public synchronized void observe(byte[] buffer, int start, int count) throws IOException {
-    if(params.isUdptun() || params.isDns()){
+    if(params.isUDP() || params.isDNS()){
       if(udpSocket == null || udpSocket.isClosed()) udpSocket = new DatagramSocket();
       DatagramPacket packet = new DatagramPacket(buffer,start,count);
       packet.setAddress(InetAddress.getByName(remoteHost));

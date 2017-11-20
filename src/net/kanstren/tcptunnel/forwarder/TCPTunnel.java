@@ -66,9 +66,9 @@ public class TCPTunnel extends Thread {
       String hummanServerAddr = Utils.mapAddrToHumanReadable(serverAddr);
       clientAddr = clientAddr+" ("+hummanClientAddr+")";
       serverAddr = serverAddr+" ("+hummanServerAddr+")";
-      Forwarder clientForward = new Forwarder(this, clientIn, serverOut, params, true, clientAddr);
+      TCPForwarder clientForward = new TCPForwarder(this, clientIn, serverOut, params, true, clientAddr);
       clientForward.start();
-      Forwarder serverForward = new Forwarder(this, serverIn, clientOut, params, false, serverAddr);
+      TCPForwarder serverForward = new TCPForwarder(this, serverIn, clientOut, params, false, serverAddr);
       serverForward.start();
 
       if (params.isPrint()) {

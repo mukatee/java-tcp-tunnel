@@ -1,4 +1,4 @@
-package net.kanstren.tcptunnel.capture;
+package net.kanstren.tcptunnel.capture.tcp;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -14,7 +14,7 @@ import static net.kanstren.tcptunnel.observers.StringConsoleLogger.ln;
 /**
  * @author Teemu Kanstren.
  */
-public class MsgSender {
+public class TCPMsgSender {
   public static String send(String to, String msg) throws Exception {
     HttpURLConnection conn = (HttpURLConnection) new URL(to).openConnection();
     conn.setRequestMethod("POST");

@@ -1,4 +1,4 @@
-package net.kanstren.tcptunnel.capture;
+package net.kanstren.tcptunnel.capture.tcp;
 
 import net.kanstren.tcptunnel.Main;
 import net.kanstren.tcptunnel.Params;
@@ -6,7 +6,6 @@ import net.kanstren.tcptunnel.PortManager;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import osmo.common.TestUtils;
 
 import static org.testng.Assert.assertEquals;
 
@@ -28,9 +27,9 @@ public class MirrorLoggingTests {
     int serverPort = PortManager.port();
     int proxyPort = PortManager.port();
     int mirrorPort = PortManager.port();
-    TestServer2 server1 = new TestServer2(serverPort, "mirror test1");
+    TCPTestServer2 server1 = new TCPTestServer2(serverPort, "mirror test1");
     server1.start();
-    TestServer2 server2 = new TestServer2(mirrorPort, "mirror test2");
+    TCPTestServer2 server2 = new TCPTestServer2(mirrorPort, "mirror test2");
     server2.start();
     //configure the tunnel to accept connections on proxyport and forward them to localhost:serverport
     Params params = new Params(proxyPort, "localhost", serverPort);
@@ -39,7 +38,7 @@ public class MirrorLoggingTests {
     Main main = new Main(params);
     main.start();
     //send a test request to get some data in the tunnel
-    String response = MsgSender.send2("localhost", proxyPort, "hi there");
+    String response = TCPMsgSender.send2("localhost", proxyPort, "hi there");
     //check we got the correct response from the server
     assertEquals(response, "mirror test1", "Response content");
 
@@ -50,12 +49,12 @@ public class MirrorLoggingTests {
     String receiveString2 = server2.getReceiveString();
     assertEquals(receiveString2, "hi there", "Received stream for mirrored forward stream");
 
-    server1 = new TestServer2(serverPort, "mirror test1");
+    server1 = new TCPTestServer2(serverPort, "mirror test1");
     server1.start();
-    server2 = new TestServer2(mirrorPort, "mirror test2");
+    server2 = new TCPTestServer2(mirrorPort, "mirror test2");
     server2.start();
 
-    String response2 = MsgSender.send2("localhost", proxyPort, "hi there again");
+    String response2 = TCPMsgSender.send2("localhost", proxyPort, "hi there again");
     //check we got the correct response from the server for a second time
     assertEquals(response2, "mirror test1", "Response content");
 
@@ -73,9 +72,9 @@ public class MirrorLoggingTests {
     int serverPort = PortManager.port();
     int proxyPort = PortManager.port();
     int mirrorPort = PortManager.port();
-    TestServer2 server1 = new TestServer2(serverPort, "mirror test1");
+    TCPTestServer2 server1 = new TCPTestServer2(serverPort, "mirror test1");
     server1.start();
-    TestServer2 server2 = new TestServer2(mirrorPort, "mirror test2");
+    TCPTestServer2 server2 = new TCPTestServer2(mirrorPort, "mirror test2");
     server2.start();
     //configure the tunnel to accept connections on proxyport and forward them to localhost:serverport
     Params params = new Params(proxyPort, "localhost", serverPort);
@@ -84,7 +83,7 @@ public class MirrorLoggingTests {
     Main main = new Main(params);
     main.start();
     //send a test request to get some data in the tunnel
-    String response = MsgSender.send2("localhost", proxyPort, "hi there");
+    String response = TCPMsgSender.send2("localhost", proxyPort, "hi there");
     //check we got the correct response from the server
     assertEquals(response, "mirror test1", "Response content");
 
@@ -95,12 +94,12 @@ public class MirrorLoggingTests {
     String receiveString2 = server2.getReceiveString();
     assertEquals(receiveString2, "mirror test1", "Received stream for mirrored forward stream");
 
-    server1 = new TestServer2(serverPort, "mirror test1");
+    server1 = new TCPTestServer2(serverPort, "mirror test1");
     server1.start();
-    server2 = new TestServer2(mirrorPort, "mirror test2");
+    server2 = new TCPTestServer2(mirrorPort, "mirror test2");
     server2.start();
 
-    String response2 = MsgSender.send2("localhost", proxyPort, "hi there again");
+    String response2 = TCPMsgSender.send2("localhost", proxyPort, "hi there again");
     //check we got the correct response from the server for a second time
     assertEquals(response2, "mirror test1", "Response content");
 

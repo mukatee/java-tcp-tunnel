@@ -1,16 +1,14 @@
-package net.kanstren.tcptunnel.capture;
+package net.kanstren.tcptunnel.capture.tcp;
 
 import fi.iki.elonen.NanoHTTPD;
-
-import java.util.Map;
 
 /**
  * @author Teemu Kanstren.
  */
-public class TestServer extends NanoHTTPD {
+public class TCPTestServer1 extends NanoHTTPD {
   private final String msg;
 
-  public TestServer(int port, String msg) {
+  public TCPTestServer1(int port, String msg) {
     super(port);
     this.msg = msg;
   }
@@ -26,7 +24,7 @@ public class TestServer extends NanoHTTPD {
     if (args.length > 0) {
       port = Integer.parseInt(args[0]);
     }
-    TestServer server = new TestServer(port, "hello from test srv");
+    TCPTestServer1 server = new TCPTestServer1(port, "hello from test srv");
     server.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
   }
 }

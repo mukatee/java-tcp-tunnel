@@ -13,7 +13,7 @@ import java.util.List;
  * Sends everything from socket 1 input stream to socket 2 outputstream.
  * In case of any error on either socket, the parent tunnel is closed.
  */
-public class Forwarder extends Thread {
+public class TCPForwarder extends Thread {
   /** Socket 1 inputstream. */
   private InputStream is;
   /** Socket 2 outputstream. */
@@ -33,7 +33,7 @@ public class Forwarder extends Thread {
    * @param up If true, we pass all data going through to upstream observers.
    * @param sourceAddr Source address of the stream (up- or down-stream). For logging purposes...
    */
-  public Forwarder(TCPTunnel parent, InputStream is, OutputStream os, Params params, boolean up, String sourceAddr) {
+  public TCPForwarder(TCPTunnel parent, InputStream is, OutputStream os, Params params, boolean up, String sourceAddr) {
     this.parent = parent;
     this.is = is;
     this.os = os;

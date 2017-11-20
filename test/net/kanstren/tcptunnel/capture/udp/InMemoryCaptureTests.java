@@ -1,8 +1,10 @@
-package net.kanstren.tcptunnel.capture;
+package net.kanstren.tcptunnel.capture.udp;
 
 import net.kanstren.tcptunnel.Main;
 import net.kanstren.tcptunnel.Params;
 import net.kanstren.tcptunnel.PortManager;
+import net.kanstren.tcptunnel.capture.tcp.TCPMsgSender;
+import net.kanstren.tcptunnel.capture.tcp.TCPTestServer2;
 import net.kanstren.tcptunnel.observers.InMemoryLogger;
 import org.testng.annotations.Test;
 import osmo.common.TestUtils;
@@ -16,41 +18,47 @@ public class InMemoryCaptureTests {
   @Test
   public void sendRequestNoMITM() throws Exception {
     int serverPort = PortManager.port();
-    TestServer2 server = new TestServer2(serverPort, "test1");
+    UDPTestServer server = new UDPTestServer(serverPort);
     server.start();
-    String response = MsgSender.send2("localhost", serverPort, "hi there");
-    assertEquals(response, "test1", "Response content");
+    Thread.sleep(100);
+    UDPMsgSender.send2("localhost", serverPort, "hi there");
+    Thread.sleep(100);
+    assertEquals(server.getReceiveString(), "hi there", "data received by UDP test server");
   }
 
   @Test
   public void sendRequestMITM() throws Exception {
     int serverPort = PortManager.port();
     int proxyPort = PortManager.port();
-    //create a test server to give us a page to request
-    TestServer2 server = new TestServer2(serverPort, "test1");
+    //create a test server to capture data sent
+    UDPTestServer server = new UDPTestServer(serverPort);
     server.start();
-    //configure the tunnel to accept connections on port 5598 and forward them to localhost:5599
+    while (!server.isStarted()) {
+      //first wait for server to start up before sending it something
+      Thread.sleep(100);
+    }
+    //configure the tunnel to accept connections on proxyport and forward them to localhost:serverport
     Params params = new Params(proxyPort, "localhost", serverPort);
+    params.setUDP(true);
     //we want to use the captured data in testing, so enable logging the tunnel data in memory with buffer size 8092 bytes
     params.enableInMemoryLogging(8092);
     //this gives us access to the data passed from client connected to port 5598 -> localhost:5599 (client to server)
     InMemoryLogger upLogger = params.getUpMemoryLogger();
-    //this gives us access to the data passed from localhost:5599 -> client connected to port 5598 (server to client)
-    InMemoryLogger downLogger = params.getDownMemoryLogger();
+    //TODO: check that UDP forwarding fails to start if downstream logging is attempted
+    //TODO: check what to do if many different loggers attempted at the same time
     //this is how we actually start the tunnel
     Main main = new Main(params);
     main.start();
     //send a test request to get some data in the tunnel
-    String response = MsgSender.send2("localhost", proxyPort, "hi there");
-    //check we got the correct response from the server
-    assertEquals(response, "test1", "Response content");
-    //assert the HTTP protocol data passed through the tunnel both ways
-    assertTcpStream(upLogger, "expected_up1.txt");
-    assertTcpStream(downLogger, "expected_down1.txt");
+    UDPMsgSender.send2("localhost", proxyPort, "hi there");
+    Thread.sleep(500);
+    //check the data was passed through to the server
+    assertEquals(server.getReceiveString(), "hi there", "data received by UDP test server");
+    assertUDPStream(upLogger, "expected_up1.txt");
   }
 
-  private void assertTcpStream(InMemoryLogger logger, String filename) throws Exception {
-    //here we get the actual data that was passed through the tunnel in one direction (depending if we get passed the upstream memorylogger or downstream)
+  private void assertUDPStream(InMemoryLogger logger, String filename) throws Exception {
+    //here we get the actual data that was passed through the tunnel (UDP only does one-way so this has to be upstream)
     String actual = logger.getString("UTF8");
     //the rest of this is just making sure the test should run the same over different platforms and with varying date-times in HTTP headers
     actual = TestUtils.unifyLineSeparators(actual, "\n");
