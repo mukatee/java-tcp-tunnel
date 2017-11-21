@@ -31,7 +31,7 @@ public class SocketForwardingObserver implements TCPObserver {
   /** Socket connection to the remote host. Redone if/when the connection drops.
    * Needs to be at class level as the observe() method gets called multiple times for big streams and we want to keep the mirror stream open as well in those cases. */
   private Socket socket = null;
-  DatagramSocket udpSocket = null;
+  private DatagramSocket udpSocket = null;
 
   /** The outputstream for the socket. Kept here since I am not sure how well the socket supports repeatedly calling getOutputStream() and tossing the reference. */
   private OutputStream os;

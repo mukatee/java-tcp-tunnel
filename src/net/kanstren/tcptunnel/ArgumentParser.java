@@ -171,7 +171,7 @@ public class ArgumentParser {
           break;
         case "--udp-dns":
           //increase the number of loggers found so we know later if we need to create the default one or not
-          params.setDns(true);
+          params.setDNS(true);
           break;
         case "--udp-tun":
           //increase the number of loggers found so we know later if we need to create the default one or not

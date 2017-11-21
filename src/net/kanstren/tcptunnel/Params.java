@@ -94,7 +94,7 @@ public class Params {
     return dns;
   }
 
-  public void setDns(boolean dns) {
+  public void setDNS(boolean dns) {
     this.dns = dns;
   }
 

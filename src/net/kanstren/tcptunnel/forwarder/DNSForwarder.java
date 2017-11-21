@@ -7,87 +7,73 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 /**
  * Created by AlexZhuo on 2017/11/9.
  */
-public class DNSForwarder extends Thread{
-    private InetAddress clientAddr;
-    private int clientPort;
-    private DatagramSocket serverSocket;
-    private DatagramSocket clientSocket;
-    private DatagramPacket sendData;
-    Params params;
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MMM.dd HH:mm:ss");
-    private List<TCPObserver> upObservers;
-    private List<TCPObserver> downObservers;
-    /** The observers to pass all data through. Logging the data etc. */
+public class DNSForwarder extends Thread {
+  /** Address to forward packets to. */
+  private InetAddress fwdAddr;
+  /** Port to forward packets to. */
+  private int fwdPort;
+  /** Socket to receive packets to forward. */
+  private DatagramSocket fwdSocket;
+  /** Socket to send packets to forward. */
+  private DatagramSocket responseSocket;
+  private DatagramPacket sendData;
+  private List<TCPObserver> upObservers;
+  private List<TCPObserver> downObservers;
 
+  public DNSForwarder(DatagramPacket packet, DatagramSocket responseSocket, InetAddress fwdAddr, int fwdPort, Params params) throws Exception {
+    this.fwdAddr = InetAddress.getByAddress(fwdAddr.getAddress());
+    this.fwdPort = fwdPort;
+    this.responseSocket = responseSocket;
+    byte[] sendmsg = Arrays.copyOf(packet.getData(), packet.getLength());
+    sendData = new DatagramPacket(sendmsg, packet.getLength(), InetAddress.getByName(params.getRemoteHost()), params.getRemotePort());
+    this.upObservers = params.createUpObservers(fwdAddr.getHostAddress() + ":" + fwdPort);
+    this.downObservers = params.createDownObservers(params.getRemoteHost());
+  }
 
-    /**
-     * Construct for Symmetric UDP forwarder
-     * @param packet
-     * @param clientSocket
-     * @param clientAddr
-     * @param clientPort
-     * @param params
-     */
-    public DNSForwarder(DatagramPacket packet, DatagramSocket clientSocket, InetAddress clientAddr, int clientPort, Params params){
-        try {
-            this.clientAddr = InetAddress.getByAddress(clientAddr.getAddress());
-            this.clientPort = clientPort;
-            this.clientSocket = clientSocket;
-            this.params = params;
-            byte[] sendmsg = Arrays.copyOf(packet.getData(),packet.getLength());
-            sendData = new DatagramPacket(sendmsg,packet.getLength(),InetAddress.getByName(params.getRemoteHost()),params.getRemotePort());
-            this.upObservers = params.createUpObservers(clientAddr.getHostAddress()+":"+clientPort);
-            this.downObservers = params.createDownObservers(params.getRemoteHost());
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
+  public InetAddress getFwdAddr() {
+    return fwdAddr;
+  }
+
+  public int getFwdPort() {
+    return fwdPort;
+  }
+
+  @Override
+  public void run() {
+    //receiving the data from remote server
+    DatagramPacket packet = new DatagramPacket(new byte[12800], 12800);
+    try {
+      fwdSocket = new DatagramSocket();
+      fwdSocket.setSoTimeout(2000);
+      fwdSocket.send(sendData);
+      if (fwdSocket.isClosed()) return;
+      fwdSocket.receive(packet);
+      //send the packet to forward target
+      packet.setAddress(fwdAddr);
+      packet.setPort(fwdPort);
+      //send received packet back to the source that did the query
+      responseSocket.send(packet);
+      for (TCPObserver observer : upObservers) {
+        observer.observe(sendData.getData(), 0, sendData.getLength());
+      }
+      for (TCPObserver observer : downObservers) {
+        observer.observe(packet.getData(), 0, packet.getLength());
+      }
+      close();
+    } catch (IOException e) {
+      e.printStackTrace();
+      close();
     }
+  }
 
-    @Override
-    public void run() {
-        //receiving the data from remote server
-        DatagramPacket response = new DatagramPacket(new byte[12800], 12800);
-        try {
-            serverSocket = new DatagramSocket();
-            serverSocket.setSoTimeout(2000);
-            serverSocket.send(sendData);
-            if(serverSocket.isClosed())return;
-            serverSocket.receive(response);
-            if (params.isPrint()) {
-                String dateStr = sdf.format(new Date());
-                String result = new String(response.getData(), 0, response.getLength(), "ASCII");
-                System.out.println(dateStr+": UDP Receiving "
-                        + response.getAddress().getHostAddress()+":"+response.getPort() + " <--> "
-                        + clientAddr+":"+clientPort);
-                System.out.println("remote server response length="+response.getLength()+"\n"+result);
-            }
-            //send the response from remote server to client
-            response.setAddress(clientAddr);
-            response.setPort(clientPort);
-            clientSocket.send(response);
-            for (TCPObserver observer : upObservers) {
-                observer.observe(sendData.getData(), 0, sendData.getLength());
-            }
-            for (TCPObserver observer : downObservers) {
-                observer.observe(response.getData(), 0, response.getLength());
-            }
-            close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void close(){
-        if(serverSocket.isClosed())return;
-        serverSocket.close();
-    }
+  public void close() {
+    if (fwdSocket.isClosed()) return;
+    fwdSocket.close();
+  }
 }

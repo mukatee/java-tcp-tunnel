@@ -109,8 +109,8 @@ public class UDPTunnel extends Thread {
   }
 
   public String toStr(UDPForwarder f) {
-    String host = f.getClientAddr().getHostAddress();
-    int port = f.getClientPort();
+    String host = f.getFwdAddr().getHostAddress();
+    int port = f.getFwdPort();
     return host + ":" + port;
   }
 
