@@ -6,8 +6,8 @@ import net.kanstren.tcptunnel.forwarder.UDPTunnel;
 
 import java.io.IOException;
 import java.net.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Main starting point for the tunnel application. Either directly from command line or programmatically.
@@ -21,7 +21,7 @@ public class Main implements Runnable {
   /** The main thread running this tunnel. */
   private Thread thread = null;
   /** List of active tunnels. */
-  private final List<TCPTunnel> tunnels = new ArrayList<>();
+  private final List<TCPTunnel> tunnels = new CopyOnWriteArrayList<>();
   private ServerSocket serverSocket;
   private DatagramSocket udpServerSocket;
 
@@ -85,7 +85,7 @@ public class Main implements Runnable {
 
   /**
    * Called when a tunnel is closed to remove it from active list.
-   * 
+   *
    * @param tunnel The closed tunnel.
    */
   public void closed(TCPTunnel tunnel) {
