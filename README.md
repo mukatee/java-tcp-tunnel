@@ -14,14 +14,15 @@ Why?
 Pretty much every software I write/work with these days seems to be networked to some extent.
 Trying to test networked software often is just more complicated than it needs to be.
 
-And then we end up using all kinds of libraries, frameworks, whatever.
-Pretty much everything also seems to fail in mysterious ways under all those layers of libraries, factories, dependency injections, black boxes, or whatever.
+And always it seems people end up using all kinds of libraries, frameworks, whatever.
+Pretty much everything then seems to fail in mysterious ways under all those layers of libraries, factories, dependency injections, black boxes, or whatever.
+
 Too many times I have tried to look for some solutions to get insight into this on the internet.
 Too many times have I ended up on the website of Fiddler or some complex (for me) solution requiring installing too many dependencies (Mono etc).
 Or with complex user interfaces when I just wanted to see what really went on (both ways client<->server) when making those network requests.
 
 This is an attempt to make debugging and testing the networked stuff easier (for me).
-I am a simple kind of a guy (who likes the programmatic approach), so this is an attempt to make something simple enough for me.
+I am a simple kind of a guy (who often likes the programmatic approach), so this is an attempt to make something simple enough for me.
 So that's why.
 
 Options
@@ -54,12 +55,6 @@ curl localhost:5566 --header 'Host: www.github.com'
 
 Note the need to fix the "Host" header for a regular HTTP website request.
 Else those pesky webservers will feel bad. For your own HTTP/REST/whatever server there is likely no such restriction.
-
-Forward local UDP port 53 to 8.8.8.8 port 53 , to resolve some DNS on local ,use symmetric udp protocal
-
-```shell
-java -jar tcptunnel-0.1.0.jar 53 8.8.8.8 53 --udp-dns
-```
 
 Same as above but log to a file.
 
@@ -106,13 +101,20 @@ In this downstream mirror example the difference is that the data sent to "local
 UDP / DNS
 ---------
 
+Forward local UDP port 53 to 8.8.8.8 port 53 , to resolve some DNS on local, use symmetric UDP protocal
+
+```shell
+java -jar tcptunnel-0.1.0.jar 53 8.8.8.8 53 --udp-dns
+```
+
+
 Test the DNS forwarder like this:
 
 ```shell
 nslookup www.google.com 127.0.0.1
 ```
 
-Notice: Using --udp-dns mode you need to make sure when you send a packet to server you will soon receive a packet from it, like the DNS request, or the socket will be out-of-time or closed .
+Notice: Using --udp-dns mode you need to make sure when you send a packet to server you will soon receive a packet from it, like the DNS request, or the socket will be out-of-time or closed.
 
 Forward local UDP port 7000 to a remote IP with port 9999, to make a P2P tunnel on UDP protocal, like OpenVPN on UDP:
 
