@@ -1,17 +1,17 @@
 Java TCP/UDP Tunnel
-===============
+===================
 
 A simple tool for capturing and inspecting data sent over a socket.
-
-Can also be used to mirror data sent to a port to two different destinations. Or to mirror data received from the tunnel to another host/port..
+In a basic use case, you put this between two HTTP endpoints and watch what really is passed in between.
+Or take a stream of protocol buffers data and split it to two destinations, while saving also to disk.
+Or whatever else you like..
 
 Can be used either from command line or as a Java library.
 
 Why?
 ----
 
-I write software. In Java (yes, how dinosaurish is that?).
-Pretty much every software I write these days seems to be networked to some extent.
+Pretty much every software I write/work with these days seems to be networked to some extent.
 Trying to test networked software often is just more complicated than it needs to be.
 
 And then we end up using all kinds of libraries, frameworks, whatever.
@@ -20,9 +20,22 @@ Too many times I have tried to look for some solutions to get insight into this 
 Too many times have I ended up on the website of Fiddler or some complex (for me) solution requiring installing too many dependencies (Mono etc).
 Or with complex user interfaces when I just wanted to see what really went on (both ways client<->server) when making those network requests.
 
-This is an attempt to make debugging and testing the networked stuff easier for me.
+This is an attempt to make debugging and testing the networked stuff easier (for me).
 I am a simple kind of a guy (who likes the programmatic approach), so this is an attempt to make something simple enough for me.
 So that's why.
+
+Options
+-------
+
+For the options
+
+```shell
+java -jar tcptunnel-0.1.0.jar --help
+```
+
+Note that you can also just use this from your IDE by cloning the Github project and setting this up as a Java project.
+For example, I use this from IntellIJ by setting the main class and using parameters such as "8079 localhost 8080".
+I leave it up to you, dear reader, to figure out what that does based on notes on this page.
 
 Example use from command line (from the scripts directory):
 -----------------------------------------------------------
@@ -40,28 +53,13 @@ curl localhost:5566 --header 'Host: www.github.com'
 ```
 
 Note the need to fix the "Host" header for a regular HTTP website request.
+Else those pesky webservers will feel bad. For your own HTTP/REST/whatever server there is likely no such restriction.
 
 Forward local UDP port 53 to 8.8.8.8 port 53 , to resolve some DNS on local ,use symmetric udp protocal
 
 ```shell
 java -jar tcptunnel-0.1.0.jar 53 8.8.8.8 53 --udp-dns
 ```
-
-Test the DNS forwarder like this:
-
-```shell
-nslookup www.google.com 127.0.0.1
-```
-Notice: Using --udp-dns mode you need to make sure when you send a packet to server you will soon receive a packet from it, like the DNS request, or the socket will be out-of-time or closed .
-
-Forward local UDP port 7000 to remote ip port 9999 , to make a P2P tunnel on UDP protocal ,like OpenVPN on UDP
-
-```shell
-java -jar tcptunnel-0.1.0.jar 7000 xxx.xxx.xxx.xxx 9999 --udp-tun
-```
-
-Notice: Default udp time out is 30s.
-
 
 Same as above but log to a file.
 
@@ -93,12 +91,6 @@ Mirror upstream data to another host/port in addition to forwarding through the 
 java -jar tcptunnel-0.1.0.jar 6677 localhost 6667 --logger mirror-up --mirror-up-host localhost --mirror-up-port 6668
 ```
 
-Mirror datagram socket (UDP), support upstream and downstream
-
-```shell
-java -jar tcptunnel-0.1.0.jar 53 8.8.8.8 53 --udp-dns --logger mirror-up --mirror-up-host localhost --mirror-up-port 6668
-```
-
 So the above listens for connections on port 6677, tunnels the bytes received on that port to "localhost:6667", and at the same time mirrors the same data also to "localhost:6668".
 The data received from the other end ("localhost:6667") is pushed back to the client connection that connected to 6677.
 The data received from the mirror server at "localhost:6668" is simply discarded.
@@ -111,17 +103,36 @@ java -jar tcptunnel-0.1.0.jar 6677 localhost 6667 --logger mirror-down --mirror-
 
 In this downstream mirror example the difference is that the data sent to "localhost:6668" is the data received back from forwarding target at "localhost:6667".
 
-For the options
+UDP / DNS
+---------
+
+Test the DNS forwarder like this:
 
 ```shell
-java -jar tcptunnel-0.1.0.jar --help
+nslookup www.google.com 127.0.0.1
 ```
+
+Notice: Using --udp-dns mode you need to make sure when you send a packet to server you will soon receive a packet from it, like the DNS request, or the socket will be out-of-time or closed .
+
+Forward local UDP port 7000 to a remote IP with port 9999, to make a P2P tunnel on UDP protocal, like OpenVPN on UDP:
+
+```shell
+java -jar tcptunnel-0.1.0.jar 7000 xxx.xxx.xxx.xxx 9999 --udp-tun
+```
+
+Notice: Default UDP timeout is 30s.
+
+Mirror datagram socket (UDP), support upstream and downstream
+
+```shell
+java -jar tcptunnel-0.1.0.jar 53 8.8.8.8 53 --udp-dns --logger mirror-up --mirror-up-host localhost --mirror-up-port 6668
+```
+
 
 Example use from Java (from the tests directory):
 -------------------------------------------------
 
-
-Example test model:
+Example use in unit test code:
 
 ```java
 public class CaptureTests {
