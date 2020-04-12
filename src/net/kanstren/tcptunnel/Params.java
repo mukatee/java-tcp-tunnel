@@ -53,9 +53,13 @@ public class Params {
   private boolean print = true;
   /** Set of errors observed in parsing configuration parameters. Empty string if none. */
   private String errors = "";
+  /** Enables mirroring of upstream data to another IP/port combination besides target. */
   private boolean mirrorUpEnabled = false;
+  /** Enables mirroring of downstream data to another IP/port combination besides target. */
   private boolean mirrorDownEnabled = false;
+  /** Enables DNS forwarding tunnel. */
   private boolean dns = false;
+  /** Enables UDP forwarding tunnel. */
   private boolean udp = false;
   /** Observers (typically loggers) for downstream data. */
   private List<TCPObserver> observersDown = new ArrayList<>();
@@ -75,6 +79,8 @@ public class Params {
   private InMemoryLogger upMemoryLogger = null;
   /** Set to false to stop this tunnel (if running..). */
   private boolean shouldRun = true;
+  /** Set to true to postfix console prints with an extra linefeed. Can help log readability if server does not return a final LF. */
+  private boolean addLF = false;
 
   /**
    * @param sourcePort Source port where to wait for tunnel initiating connections on localhost.
@@ -105,6 +111,14 @@ public class Params {
 
   public void setUDP(boolean udp) {
     this.udp = udp;
+  }
+
+  public boolean isAddLF() {
+    return addLF;
+  }
+
+  public void setAddLF(boolean addLF) {
+    this.addLF = addLF;
   }
 
   /**
@@ -337,8 +351,8 @@ public class Params {
    * Decoding based on defined encoding setting.
    */
   public void enableStringConsoleLogger() {
-    observersDown.add(new StringConsoleLogger(System.out, "down", encoding));
-    observersUp.add(new StringConsoleLogger(System.out, "up", encoding));
+    observersDown.add(new StringConsoleLogger(System.out, "down", encoding, addLF));
+    observersUp.add(new StringConsoleLogger(System.out, "up", encoding, addLF));
   }
 
   /**

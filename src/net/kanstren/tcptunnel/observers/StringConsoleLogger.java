@@ -18,21 +18,28 @@ public class StringConsoleLogger implements TCPObserver {
   private final String prefix;
   /** Character encoding id to use for decoding. Default is UTF8. */
   private final String encoding;
+  /** If enabled, adds a linefeed/newline every time something is printed. To keep timestamps messing with data printouts without final linefeed. */
+  private final boolean addLF;
 
   /**
    * @param stream Write the collected trace (decoded strings) here.
    * @param prefix Prefix every captured data set (e.g., message) with this.
    * @param encoding The character encoding id to use for decoding the bytes to string.
+   * @param addLF If true, add linefeed to end of each print.
    */
-  public StringConsoleLogger(PrintStream stream, String prefix, String encoding) {
+  public StringConsoleLogger(PrintStream stream, String prefix, String encoding, boolean addLF) {
     this.stream = stream;
     this.prefix = prefix;
     this.encoding = encoding;
+    this.addLF = addLF;
   }
 
   @Override
   public void observe(byte[] buffer, int start, int count) throws IOException {
     String add = new String(buffer, start, count, encoding);
     stream.print(ln+prefix+":"+ln+add);
+    if (addLF) {
+      stream.print(ln);
+    }
   }
 }

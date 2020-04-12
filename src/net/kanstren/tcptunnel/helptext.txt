@@ -18,6 +18,7 @@ Options:
   --mirror-down-port <port>: Configures down-stream mirroring forwarder target port.
   --logger <type> : Add specified type of logger. Default is 'console-string'.
   --hex <true/false> : If using a console-bytes logger, defines whether to convert bytes to hex or int in printed lists.
+  --trailing-lf: Adds a linefeed at end of each console print if enabled.
   --help : Prints this help and exits.
 
 Loggers types:

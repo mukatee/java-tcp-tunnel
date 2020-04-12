@@ -44,6 +44,10 @@ public class ArgumentParser {
           options.add(new Option("--help", "true"));
           continue;
         }
+        if (arg.equals("--trailing-lf")) {
+          options.add(new Option("--trailing-lf", "true"));
+          continue;
+        }
         if (arg.equals("--udp-dns")) {
           options.add(new Option("--udp-dns", "true"));
           continue;
@@ -177,6 +181,9 @@ public class ArgumentParser {
           //increase the number of loggers found so we know later if we need to create the default one or not
           params.setUDP(true);
           break;
+        case "--trailing-df":
+          //enable adding a trailing LF to every console print
+          params.setAddLF(true);
         default:
           //anything not processed above is invalid..
           errors += "Invalid option '" + name + "'." + ln;
