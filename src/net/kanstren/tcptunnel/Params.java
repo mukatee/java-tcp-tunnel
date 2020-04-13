@@ -1,12 +1,6 @@
 package net.kanstren.tcptunnel;
 
-import net.kanstren.tcptunnel.observers.ByteConsoleLogger;
-import net.kanstren.tcptunnel.observers.ByteFileLogger;
-import net.kanstren.tcptunnel.observers.InMemoryLogger;
-import net.kanstren.tcptunnel.observers.SocketForwardingObserver;
-import net.kanstren.tcptunnel.observers.StringConsoleLogger;
-import net.kanstren.tcptunnel.observers.StringFileLogger;
-import net.kanstren.tcptunnel.observers.TCPObserver;
+import net.kanstren.tcptunnel.observers.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,6 +37,8 @@ public class Params {
   private int mirrorDownPort = -1;
   /** Actual buffer size used to read/write sockets. */
   private int bufferSize = DEFAULT_BUFFER_SIZE;
+  /** If receiving HTTP content, unzip any gzip responses before logging. */
+  private boolean gzip;
   /** Path to the base filename where downstream logs are to be written. */
   private String downFilePath = DEFAULT_DOWN_PATH;
   /** Path to the base filename where upstream logs are to be written. */
@@ -119,6 +115,14 @@ public class Params {
 
   public void setAddLF(boolean addLF) {
     this.addLF = addLF;
+  }
+
+  public boolean isGzip() {
+    return gzip;
+  }
+
+  public void setGzip(boolean gzip) {
+    this.gzip = gzip;
   }
 
   /**
@@ -351,8 +355,13 @@ public class Params {
    * Decoding based on defined encoding setting.
    */
   public void enableStringConsoleLogger() {
-    observersDown.add(new StringConsoleLogger(System.out, "down", encoding, addLF));
-    observersUp.add(new StringConsoleLogger(System.out, "up", encoding, addLF));
+    if (gzip) {
+      observersDown.add(new GZipStringConsoleLogger(System.out, "down", encoding, addLF));
+      observersUp.add(new GZipStringConsoleLogger(System.out, "up", encoding, addLF));
+    } else {
+      observersDown.add(new StringConsoleLogger(System.out, "down", encoding, addLF));
+      observersUp.add(new StringConsoleLogger(System.out, "up", encoding, addLF));
+    }
   }
 
   /**

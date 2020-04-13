@@ -56,6 +56,10 @@ public class ArgumentParser {
           options.add(new Option("--udp-tun", "true"));
           continue;
         }
+        if (arg.equals("--gzip")) {
+          options.add(new Option("--gzip", "true"));
+          continue;
+        }
         if (args.length <= i + 1) {
           //all options coming this far should have a value. otherwise it is an error.
           errors += "No value given for option " + arg + ". Please provide one." + ln;
@@ -184,6 +188,11 @@ public class ArgumentParser {
         case "--trailing-df":
           //enable adding a trailing LF to every console print
           params.setAddLF(true);
+          break;
+        case "--gzip":
+          //try to decompress gzip encoding in HTTP requests for string logs
+          params.setGzip(true);
+          break;
         default:
           //anything not processed above is invalid..
           errors += "Invalid option '" + name + "'." + ln;
