@@ -135,7 +135,7 @@ HTTP/GZIP
 There is some support for trying to look for gzip compression inside HTTP requests and decompressing those for string logging.
 I made this to help decode some HTTP REST framework requests, where the data is always GZIP'd and the log is less usefull without decompression.
 
-This support does not work for all types of combinations. For example, chunked transfers will not work.
+This support does not work for all types of combinations. For example, chunked transfers may have some issues, although it should work also if the data is plain GZIP without headers (like a continuation chunk).
 It just expects to see a single HTTP request, with the GZIP magic header starting the GZIP's content,
 which then is expected to continue until the end of the response.
 
