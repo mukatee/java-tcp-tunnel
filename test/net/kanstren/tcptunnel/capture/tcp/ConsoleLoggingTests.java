@@ -47,7 +47,7 @@ public class ConsoleLoggingTests {
     TestUtils.endOutputCapture();
     String actual = TestUtils.getOutput();
     //first line prints opening tunnel, last one closing it. ports on those lines are random so better to remove them from assert
-    actual = stripResponseForTest(actual);
+    actual = stripResponseForTest(actual, false);
     String expected = TestUtils.getResource(ConsoleLoggingTests.class, "expected_console1.txt")+"\n";
     assertEquals(actual, expected);
   }
@@ -75,7 +75,7 @@ public class ConsoleLoggingTests {
     TestUtils.endOutputCapture();
     String actual = TestUtils.getOutput();
     //first line prints opening tunnel, last one closing it. ports on those lines are random so better to remove them from assert
-    actual = stripResponseForTest(actual);
+    actual = stripResponseForTest(actual, false);
     String expected = TestUtils.getResource(ConsoleLoggingTests.class, "expected_console3.txt")+"\n";
     assertEquals(actual, expected);
   }
@@ -102,7 +102,7 @@ public class ConsoleLoggingTests {
     Thread.sleep(100);
     TestUtils.endOutputCapture();
     String actual = TestUtils.getOutput();
-    actual = stripResponseForTest(actual);
+    actual = stripResponseForTest(actual, false);
     String expected = TestUtils.getResource(ConsoleLoggingTests.class, "expected_console2.txt")+"\n";
     assertEquals(actual, expected);
   }
@@ -131,19 +131,20 @@ public class ConsoleLoggingTests {
     Thread.sleep(100);
     TestUtils.endOutputCapture();
     String actual = TestUtils.getOutput();
-    actual = stripResponseForTest(actual);
+    actual = stripResponseForTest(actual, false);
     String expected = TestUtils.getResource(ConsoleLoggingTests.class, "expected_console4.txt")+"\n";
     assertEquals(actual, expected);
   }
 
   //http://stackoverflow.com/questions/8624195/how-to-remove-first-line-from-a-string-containing-xml
-  public String stripResponseForTest(String from) {
+  public static String stripResponseForTest(String from, boolean dated) {
     String s = TestUtils.unifyLineSeparators(from, "\n");
     String[] lines = s.split("\n");
     StringBuilder sb = new StringBuilder(from.length());
     for (String line : lines) {
       //remove tunnel status lines. ports on those lines are random so better to remove them from assert
       if (line.contains(": TCP Forwarding")) continue;
+      if (dated && line.startsWith("Date:")) continue;
       //remove date lines as datetimes vary across executions
 //      if (line.startsWith("Date")) continue;
       //trim the line since looking at the expected files in editor stripts trailing whitespace

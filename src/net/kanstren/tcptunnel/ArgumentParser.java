@@ -185,7 +185,7 @@ public class ArgumentParser {
           //increase the number of loggers found so we know later if we need to create the default one or not
           params.setUDP(true);
           break;
-        case "--trailing-df":
+        case "--trailing-lf":
           //enable adding a trailing LF to every console print
           params.setAddLF(true);
           break;

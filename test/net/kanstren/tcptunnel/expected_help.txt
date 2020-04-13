@@ -19,6 +19,7 @@ Options:
   --logger <type> : Add specified type of logger. Default is 'console-string'.
   --hex <true/false> : If using a console-bytes logger, defines whether to convert bytes to hex or int in printed lists.
   --trailing-lf: Adds a linefeed at end of each console print if enabled.
+  --gzip: Looks for HTTP responses with GZIP compression and decompresses those if found for logging. Rather experimental, does now work with chunked transfers, and might have other issues.
   --help : Prints this help and exits.
 
 Loggers types:

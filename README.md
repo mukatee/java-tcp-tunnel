@@ -130,6 +130,22 @@ Mirror datagram socket (UDP), support upstream and downstream
 java -jar tcptunnel-1.2.0.jar 53 8.8.8.8 53 --udp-dns --logger mirror-up --mirror-up-host localhost --mirror-up-port 6668
 ```
 
+HTTP/GZIP
+---------
+There is some support for trying to look for gzip compression inside HTTP requests and decompressing those for string logging.
+I made this to help decode some HTTP REST framework requests, where the data is always GZIP'd and the log is less usefull without decompression.
+
+This support does not work for all types of combinations. For example, chunked transfers will not work.
+It just expects to see a single HTTP request, with the GZIP magic header starting the GZIP's content,
+which then is expected to continue until the end of the response.
+
+Example:
+```shell
+java -jar tcptunnel-1.2.0.jar 6688 httpbin.org 80 --gzip
+
+curl -sH 'Accept-encoding: gzip' http://localhost:6688/gzip
+```
+
 
 Example use from Java (from the tests directory):
 -------------------------------------------------
@@ -197,6 +213,12 @@ Either use Maven dependencies or download the jar directly.
 ```
 
 or direct [link](http://central.maven.org/maven2/net/kanstren/tcptunnel/tcptunnel/1.0.0/tcptunnel-1.0.0.jar)
+
+Go Cousin
+---------
+There is also the Golang version I wrote: [Go-Forward](https://github.com/mukatee/go-forward).
+It may not have 100% the same functionality at this time, but it compiles to a single binary if thats your preference.
+And if you want to modify the tunnel but prefer Go, that could be an option..
 
 License
 -------

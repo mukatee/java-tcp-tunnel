@@ -3,6 +3,8 @@ package net.kanstren.tcptunnel.observers;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 /**
@@ -41,7 +43,7 @@ public class GZipStringConsoleLogger implements TCPObserver {
     byte[] content = buffer;
     byte[] gzipMagic = new byte[]{0x1f, (byte)0x8b, 0x08};
     int gzStart = indexOf(buffer, gzipMagic, start);
-    if (gzStart > 0) {
+    if (gzStart >= 0) {
       int to = start + count;
       byte[] gzip = Arrays.copyOfRange(buffer, gzStart, to);
       gzip = unzip(gzip);
@@ -74,6 +76,7 @@ public class GZipStringConsoleLogger implements TCPObserver {
     int gzStart = indexOf(gzip, gzipMagic, 0);
     if (gzStart > 0) {
       gzip = Arrays.copyOfRange(gzip, gzStart, gzip.length);
+      //Files.write(Paths.get("test-file.bytes"), gzip);
     }
     try (java.io.ByteArrayInputStream bytein = new java.io.ByteArrayInputStream(gzip);
          java.util.zip.GZIPInputStream gzin = new java.util.zip.GZIPInputStream(bytein);

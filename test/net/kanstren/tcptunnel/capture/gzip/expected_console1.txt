@@ -1,0 +1,33 @@
+
+up:
+GET /gzip HTTP/1.1
+User-Agent: tcptunnel-tester
+Accept-Encoding: gzip
+Cache-Control: no-cache
+Pragma: no-cache
+Host: localhost:5555
+Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
+Connection: keep-alive
+
+
+down:
+HTTP/1.1 200 OK
+Content-Type: application/json
+Connection: keep-alive
+Server: gunicorn/19.9.0
+Content-Encoding: gzip
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+
+{
+"gzipped": true,
+"headers": {
+"Accept": "text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2",
+"Accept-Encoding": "gzip",
+"Cache-Control": "no-cache",
+"Host": "localhost",
+"Pragma": "no-cache",
+"User-Agent": "tcptunnel-tester",
+},
+"method": "GET",
+}

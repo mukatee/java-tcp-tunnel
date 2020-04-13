@@ -15,8 +15,10 @@ public class TCPTestServer1 extends NanoHTTPD {
 
   @Override
   public Response serve(IHTTPSession session) {
-    System.out.println("received request...");
-    return newFixedLengthResponse(msg);
+    //System.out.println("received request...");
+    Response response = newFixedLengthResponse(msg);
+    response.setGzipEncoding(true);
+    return response;
   }
 
   public static void main(String[] args) throws Exception {

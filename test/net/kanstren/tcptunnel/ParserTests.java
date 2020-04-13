@@ -1,10 +1,6 @@
 package net.kanstren.tcptunnel;
 
-import net.kanstren.tcptunnel.observers.ByteConsoleLogger;
-import net.kanstren.tcptunnel.observers.ByteFileLogger;
-import net.kanstren.tcptunnel.observers.StringConsoleLogger;
-import net.kanstren.tcptunnel.observers.StringFileLogger;
-import net.kanstren.tcptunnel.observers.TCPObserver;
+import net.kanstren.tcptunnel.observers.*;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import osmo.common.TestUtils;
@@ -60,6 +56,12 @@ public class ParserTests {
             {new String[] {"2222", "localhost", "1911", "--down", "hello.txt"}, 2222, "localhost", 1911,
                     Params.DEFAULT_BUFFER_SIZE, "hello.txt", Params.DEFAULT_UP_PATH, Params.DEFAULT_ENCONDING,
                     false, StringConsoleLogger.class, null},
+            {new String[] {"2222", "localhost", "1911", "--down", "hello.txt", "--gzip"}, 2222, "localhost", 1911,
+                    Params.DEFAULT_BUFFER_SIZE, "hello.txt", Params.DEFAULT_UP_PATH, Params.DEFAULT_ENCONDING,
+                    false, GZipStringConsoleLogger.class, null},
+            {new String[] {"2222", "localhost", "1911", "--down", "hello.txt", "--gzip", "--trailing-lf"}, 2222, "localhost", 1911,
+                    Params.DEFAULT_BUFFER_SIZE, "hello.txt", Params.DEFAULT_UP_PATH, Params.DEFAULT_ENCONDING,
+                    false, GZipStringConsoleLogger.class, null},
             {new String[] {"2222", "localhost", "1911", "--up", "hi.txt"}, 2222, "localhost", 1911,
                     Params.DEFAULT_BUFFER_SIZE, Params.DEFAULT_DOWN_PATH, "hi.txt", Params.DEFAULT_ENCONDING,
                     false, StringConsoleLogger.class, null},
