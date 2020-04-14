@@ -21,7 +21,6 @@ import static org.testng.Assert.assertEquals;
  */
 public class GZipTests {
 
-
   @Test
   public void networkGzip() throws Exception {
     int proxyPort = PortManager.port();
@@ -50,6 +49,9 @@ public class GZipTests {
     actual = ConsoleLoggingTests.stripResponseForTest(actual, true);
     actual = stripResponseForTest(actual);
     String expected = TestUtils.getResource(GZipTests.class, "expected_console1.txt")+"\n";
+    //note, this test can be a little flaky since sometimes the server chunks the response.
+    //the observer should still work but it will add an extra "down" to the print, since the response comes downstream in two chunks
+    //maybe fix it someday but it is not a real issue..
     assertEquals(actual, expected);
   }
 
@@ -61,7 +63,8 @@ public class GZipTests {
     //StringConsoleLogger logger = new StringConsoleLogger(System.out, "test", "UTF8", false, true);
     byte[] unzipped = GZipStringConsoleLogger.unzip(bytes);
     String uzStr = new String(unzipped, "UTF8");
-    System.out.println(uzStr);
+    uzStr = stripResponseForTest(uzStr);
+    assertEquals(uzStr, "");
   }
 
   @Test
@@ -86,7 +89,9 @@ public class GZipTests {
     byte[] bytes = readStream(stream);
     byte[] unzipped = GZipStringConsoleLogger.unzip(bytes);
     String uzStr = new String(unzipped, "UTF8");
-    System.out.println(uzStr);
+    uzStr = stripResponseForTest(uzStr);
+    String expected = TestUtils.getResource(GZipTests.class, "expected_response1.txt")+"\n";
+    assertEquals(uzStr, expected);
   }
 
   @Test
@@ -95,7 +100,8 @@ public class GZipTests {
     byte[] bytes = readStream(stream);
     byte[] unzipped = GZipStringConsoleLogger.unzip(bytes);
     String uzStr = new String(unzipped, "UTF8");
-    System.out.println(uzStr);
+    uzStr = stripResponseForTest(uzStr);
+    assertEquals(uzStr, "hello from test srv\n");
   }
 
   @Test
@@ -104,8 +110,26 @@ public class GZipTests {
     byte[] bytes = readStream(stream);
     byte[] unzipped = GZipStringConsoleLogger.unzip(bytes);
     String uzStr = new String(unzipped, "UTF8");
-    System.out.println(uzStr);
+    uzStr = stripResponseForTest(uzStr);
+    String expected = TestUtils.getResource(GZipTests.class, "expected_response2.txt")+"\n";
+    assertEquals(uzStr, expected);
+  }
 
+  @Test
+  public void reuseBuffer() throws Exception {
+    //test for reused buffer where anot GZIP magic appears after actual data, as from previous request
+    //such data should be ignored, since parse index should not reach that far
+    InputStream stream = GZipTests.class.getResourceAsStream("bare_gz.bytes");
+    byte[] bytes = readStream(stream);
+    byte[] doubleBytes = new byte[bytes.length*2];
+    System.arraycopy(bytes, 0, doubleBytes, 0, bytes.length);
+    System.arraycopy(bytes, 0, doubleBytes, bytes.length, bytes.length);
+    GZipStringConsoleLogger logger = new GZipStringConsoleLogger(System.out, "test", "UTF8", false);
+    //this should not throw, although the magic bytes appear also later in the buffer but outside given range
+    //note that it skips first byte, so the first magic number is not found either
+    logger.observe(doubleBytes, 1, bytes.length-10);
+    //just to be sure, check that the latter part still works
+    logger.observe(doubleBytes, bytes.length, bytes.length);
   }
 
   @Test
@@ -114,7 +138,9 @@ public class GZipTests {
     byte[] bytes = readStream(stream);
     byte[] unzipped = GZipStringConsoleLogger.unzip(bytes);
     String uzStr = new String(unzipped, "UTF8");
-    System.out.println(uzStr);
+    uzStr = stripResponseForTest(uzStr);
+    String expected = TestUtils.getResource(GZipTests.class, "expected_response2.txt")+"\n";
+    assertEquals(uzStr, expected);
   }
 
   @Test
@@ -123,7 +149,9 @@ public class GZipTests {
     byte[] bytes = readStream(stream);
     byte[] unzipped = GZipStringConsoleLogger.unzip(bytes);
     String uzStr = new String(unzipped, "UTF8");
-    System.out.println(uzStr);
+    uzStr = stripResponseForTest(uzStr);
+    String expected = TestUtils.getResource(GZipTests.class, "expected_response2.txt")+"\n";
+    assertEquals(uzStr, expected);
   }
 
   private byte[] readStream(InputStream is) throws IOException {

@@ -1,0 +1,9 @@
+{
+"gzipped": true,
+"headers": {
+"Accept": "*/*",
+"Host": "httpbin.org",
+"User-Agent": "curl/7.64.1",
+},
+"method": "GET",
+}

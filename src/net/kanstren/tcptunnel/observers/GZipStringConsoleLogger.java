@@ -42,7 +42,7 @@ public class GZipStringConsoleLogger implements TCPObserver {
   public void observe(byte[] buffer, int start, int count) throws IOException {
     byte[] content = buffer;
     byte[] gzipMagic = new byte[]{0x1f, (byte)0x8b, 0x08};
-    int gzStart = indexOf(buffer, gzipMagic, start);
+    int gzStart = indexOf(buffer, gzipMagic, start, start+count);
     if (gzStart >= 0) {
       int to = start + count;
       byte[] gzip = Arrays.copyOfRange(buffer, gzStart, to);
@@ -62,7 +62,7 @@ public class GZipStringConsoleLogger implements TCPObserver {
   }
 
   public static int bodyIndex(byte[] from, int start) {
-    return indexOf(from, "\r\n\r\n".getBytes(StandardCharsets.UTF_8), start)+4; //+4 is for the \r\n\r\n
+    return indexOf(from, "\r\n\r\n".getBytes(StandardCharsets.UTF_8), start, from.length)+4; //+4 is for the \r\n\r\n
   }
 
   public static byte[] extractHeader(byte[] from, int start, int count) {
@@ -73,7 +73,7 @@ public class GZipStringConsoleLogger implements TCPObserver {
 
   public static byte[] unzip(byte[] gzip) throws IOException {
     byte[] gzipMagic = new byte[]{0x1f, (byte)0x8b, 0x08};
-    int gzStart = indexOf(gzip, gzipMagic, 0);
+    int gzStart = indexOf(gzip, gzipMagic, 0, gzip.length);
     if (gzStart > 0) {
       gzip = Arrays.copyOfRange(gzip, gzStart, gzip.length);
       //Files.write(Paths.get("test-file.bytes"), gzip);
@@ -98,8 +98,12 @@ public class GZipStringConsoleLogger implements TCPObserver {
 
   }
 
-  public static int indexOf(byte[] outerArray, byte[] smallerArray, int start) {
-    for(int i = start ; i < outerArray.length - smallerArray.length+1 ; ++i) {
+  public static int indexOf(byte[] outerArray, byte[] smallerArray, int start, int end) {
+    int maxEnd = outerArray.length - smallerArray.length+1;
+    if (maxEnd < end) {
+      end = maxEnd;
+    }
+    for(int i = start ; i <  end ; ++i) {
       boolean found = true;
       for(int j = 0 ; j < smallerArray.length ; ++j) {
         if (outerArray[i+j] != smallerArray[j]) {
