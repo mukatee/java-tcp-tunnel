@@ -208,11 +208,11 @@ Either use Maven dependencies or download the jar directly.
 <dependency>
 	<groupId>net.kanstren.tcptunnel</groupId>
 	<artifactId>tcptunnel</artifactId>
-	<version>1.0.0</version>
+	<version>1.2.0</version>
 </dependency>
 ```
 
-or direct [link](http://central.maven.org/maven2/net/kanstren/tcptunnel/tcptunnel/1.0.0/tcptunnel-1.0.0.jar)
+or direct [link](http://central.maven.org/maven2/net/kanstren/tcptunnel/tcptunnel/1.2.0/tcptunnel-1.2.0.jar)
 
 Go Cousin
 ---------
