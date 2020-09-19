@@ -32,6 +32,7 @@ public class TCPTunnel extends Thread {
   /**
    * @param params Configuration parameters.
    * @param localSocket Socket for the local port (endpoint 1 for tunnel).
+   * @param parent Parent to notify when connection is broken
    */
   public TCPTunnel(Params params, Socket localSocket, Main parent) {
     this.params = params;

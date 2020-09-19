@@ -1,0 +1,12 @@
+{
+"gzipped": true,
+"headers": {
+"Accept": "text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2",
+"Accept-Encoding": "gzip",
+"Cache-Control": "no-cache",
+"Host": "localhost",
+"Pragma": "no-cache",
+"User-Agent": "tcptunnel-tester",
+},
+"method": "GET",
+}

@@ -1,0 +1,32 @@
+A program for capturing data sent and received between two points. A proxy. A MITM. A whatever.
+Nothing fancy, just basic capture of data. No certificate handling etc.
+
+Usage: java -jar tcptunnel.jar [options] <sourceport> <remotehost> <remoteport>
+Parameters:
+  <sourceport> : The port to bind and wait for connections on localhost.
+  <remotehost> : The host to connect to and forward traffic when someone connects to <sourceport>.
+  <remoteport> : The port on the <remotehost> to connect to and forward traffic when someone connects to <sourceport>.
+
+Options:
+  --buffersize <bytes> : Size of input buffer used to read data in bytes. Defaults to 8192 bytes.
+  --encoding <encoding> : Use the given encoding to decode strings. Default is UTF8.
+  --down <path> : Write remote->local data stream to file in <path>. Default is tcp_down. Suffix is logger dependent.
+  --up <path> : Write local->remote data stream to file in <path>. Default is tcp_up. Suffix is logger dependent.
+  --mirror-up-host <host>: Configures up-stream mirroring forwarder target host name/ip.
+  --mirror-up-port <port>: Configures up-stream mirroring forwarder target port.
+  --mirror-down-host <host>: Configures down-stream mirroring forwarder target host name/ip.
+  --mirror-down-port <port>: Configures down-stream mirroring forwarder target port.
+  --logger <type> : Add specified type of logger. Default is 'console-string'.
+  --hex <true/false> : If using a console-bytes logger, defines whether to convert bytes to hex or int in printed lists.
+  --trailing-lf: Adds a linefeed at end of each console print if enabled.
+  --gzip: Looks for HTTP responses with GZIP compression and decompresses those if found for logging. Rather experimental, does now work with chunked transfers, and might have other issues.
+  --help : Prints this help and exits.
+
+Loggers types:
+  console-string: Prints logged data as strings (in defined encoding). For upstream to system.out and downstream to system.err.
+  console-bytes: Prints logged data as list of byte values. For upstream to system.out and for downstream to system.err.
+  file-string: Prints as strings (in defined encoding). To defined output files with .txt ending.
+  file-bytes: Writes logged data as list of byte values. To defined output files with .bytes ending.
+  mirror-up: Forwards the upstream data to given address as configured by <mirror-up-host> and <mirror-up-port>
+  mirror-down: Forwards the downstream data to given address as configured by <mirror-down-host> and <mirror-down-port>
+

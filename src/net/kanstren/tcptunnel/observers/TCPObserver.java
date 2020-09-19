@@ -16,6 +16,7 @@ public interface TCPObserver {
    * @param buffer The byte array containing the bytes to observe.
    * @param start Starting index in the byte array to observe.
    * @param count The number of bytes to observe.
+   * @throws IOException the IOException
    */
   void observe(byte[] buffer, int start, int count) throws IOException;
 }
