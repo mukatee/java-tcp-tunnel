@@ -32,7 +32,7 @@ public class TCPTestServer2 implements Runnable {
 
   public void start() throws Exception {
     new Thread(this).start();
-    Thread.sleep(10);
+    Thread.sleep(50);
   }
 
   public String getReceiveString() {
