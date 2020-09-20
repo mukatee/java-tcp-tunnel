@@ -1,6 +1,8 @@
 Java TCP/UDP Tunnel
 ===================
 
+![Java CI with Maven](https://github.com/mukatee/java-tcp-tunnel/workflows/Java%20CI%20with%20Maven/badge.svg)
+
 A simple tool for capturing and inspecting data sent over a socket.
 In a basic use case, you put this between two HTTP endpoints and watch what really is passed in between.
 Or take a stream of protocol buffers data and split it to two destinations, while saving also to disk.
