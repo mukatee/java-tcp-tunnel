@@ -331,7 +331,7 @@ public class Params {
    * 
    * @param downPath Path to the basename for storing downstream data. Suffix separately added based on file type.
    * @param upPath Path to the basename for storing upstream data. Suffix separately added based on file type.
-   * @throws IOException
+   * @throws IOException when an IOException occurs
    */
   public void enableStringFileLogger(String downPath, String upPath) throws IOException {
     observersDown.add(new StringFileLogger(downPath));
@@ -343,7 +343,7 @@ public class Params {
    *
    * @param downPath Path to the basename for storing downstream data. Suffix separately added based on file type.
    * @param upPath Path to the basename for storing upstream data. Suffix separately added based on file type.
-   * @throws IOException
+   * @throws IOException when an IOException occurs
    */
   public void enableByteFileLogger(String downPath, String upPath) throws IOException {
     observersDown.add(new ByteFileLogger(downPath));
@@ -366,6 +366,8 @@ public class Params {
 
   /**
    * Enable logging by mirroring the uplink data to another IP address.
+   * @param remotePort The port on remote host to connect to.
+   * @param remoteHost The remote host where the tunnel should be formed when someone connects to the source port
    */
   public void enableMirrorUpStreamLogger(String remoteHost, int remotePort) {
     mirrorUpEnabled = true;
@@ -376,6 +378,8 @@ public class Params {
 
   /**
    * Enable logging by mirroring the downlink data to another IP address.
+   * @param remotePort The port on remote host to connect to.
+   * @param remoteHost The remote host where the tunnel should be formed when someone connects to the source port
    */
   public void enableMirrorDownStreamLogger(String remoteHost, int remotePort) {
     mirrorDownEnabled = true;
