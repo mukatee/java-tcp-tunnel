@@ -53,7 +53,7 @@ public class FileLoggingTests {
     //this is how we actually start the tunnel
     Main main = new Main(params);
     main.start();
-    Thread.sleep(100);
+    Thread.sleep(10);
     //send a test request to get some data in the tunnel
     UDPMsgSender.send2("localhost", proxyPort, "hi there");
     Thread.sleep(300);
@@ -84,7 +84,7 @@ public class FileLoggingTests {
     //this is how we actually start the tunnel
     Main main = new Main(params);
     main.start();
-    Thread.sleep(100);
+    Thread.sleep(10);
     //send a test request to get some data in the tunnel
     UDPMsgSender.send2("localhost", proxyPort, ultestBytes);
     Thread.sleep(300);

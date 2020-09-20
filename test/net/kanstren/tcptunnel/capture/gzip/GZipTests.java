@@ -34,6 +34,7 @@ public class GZipTests {
     //this is how we actually start the tunnel
     Main main = new Main(params);
     main.start();
+    Thread.sleep(10);
     //send a test request to get some data in the tunnel
     byte[] response = TCPMsgSender.sendGZGet("http://localhost:"+proxyPort+"/gzip");
     //check we got the a GZIP encoded response

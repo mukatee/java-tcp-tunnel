@@ -75,7 +75,7 @@ public class ConsoleLoggingTests {
     //this is how we actually start the tunnel
     Main main = new Main(params);
     main.start();
-    Thread.sleep(100);
+    Thread.sleep(10);
     sendAndReadResponse("hi there hex boy", "expected_console2.txt");
   }
 
@@ -85,7 +85,7 @@ public class ConsoleLoggingTests {
     //this is how we actually start the tunnel
     Main main = new Main(params);
     main.start();
-    Thread.sleep(100);
+    Thread.sleep(10);
     sendAndReadResponse("hi there\n", "expected_console3.txt");
   }
 

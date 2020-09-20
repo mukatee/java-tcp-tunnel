@@ -37,6 +37,7 @@ public class MirrorLoggingTests {
     //this is how we actually start the tunnel
     Main main = new Main(params);
     main.start();
+    Thread.sleep(10);
     //send a test request to get some data in the tunnel
     String response = TCPMsgSender.send2("localhost", proxyPort, "hi there");
     //check we got the correct response from the server
@@ -82,6 +83,7 @@ public class MirrorLoggingTests {
     //this is how we actually start the tunnel
     Main main = new Main(params);
     main.start();
+    Thread.sleep(10);
     //send a test request to get some data in the tunnel
     String response = TCPMsgSender.send2("localhost", proxyPort, "hi there");
     //check we got the correct response from the server
