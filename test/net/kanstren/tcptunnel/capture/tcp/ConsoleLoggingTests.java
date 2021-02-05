@@ -33,13 +33,14 @@ public class ConsoleLoggingTests {
     server.start();
     //configure the tunnel to accept connections on port 5598 and forward them to localhost:5599
     Params params = new Params(proxyPort, "localhost", serverPort);
+    params.setHttps(true);
     params.enableByteConsoleLogger(false);
     //this is how we actually start the tunnel
     Main main = new Main(params);
     main.start();
     Thread.sleep(50);
     //send a test request to get some data in the tunnel
-    String response = TCPMsgSender.send2("localhost", proxyPort, "hi there");
+    String response = TCPMsgSender.send3("localhost", proxyPort, "hi there");
     //check we got the correct response from the server
     assertEquals(response, "console test1", "Response content");
 

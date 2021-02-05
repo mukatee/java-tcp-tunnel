@@ -1,5 +1,7 @@
 package net.kanstren.tcptunnel.capture.tcp;
 
+import org.testng.internal.Nullable;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.Socket;
@@ -118,6 +120,38 @@ public class TCPMsgSender {
     byte[] result = new byte[read];
     System.arraycopy(buf, 0, result, 0, read);
     return result;
+  }
+
+  public static String send3(String host, int port, String msg) throws Exception {
+    return new String(send3(host, port, msg.getBytes()));
+  }
+
+  public static byte[] send3(String host, int port, byte[] bytes) throws Exception {
+    byte[] buf = new byte[8092];
+
+    Socket socket = new Socket(host, port);
+    InputStream is = socket.getInputStream();
+    OutputStream os = socket.getOutputStream();
+
+    // envia payload para o proxy
+    os.write("HTTP/ \n\n.".getBytes());
+    // lê a resposta do proxy
+    int read = is.read(buf);
+    byte[] result = new byte[read];
+    System.arraycopy(buf, 0, result, 0, read);
+    String res = new String(result);
+    // se receber 200 ok, envia a requisição real
+    if (res.contains("200 OK")) {
+      os.write(bytes);
+      buf = new byte[8092];
+      read = is.read(buf);
+      result = new byte[read];
+      System.arraycopy(buf, 0, result, 0, read);
+      return result;
+    }
+    else {
+      return res.getBytes();
+    }
   }
 
   public static void main(String[] args) throws Exception {

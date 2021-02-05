@@ -63,12 +63,8 @@ public class TCPTunnel extends Thread {
       // Send http 200 ok to client and start forwarding
       if (params.isHttps()) {
         // read request client and ignore
-        byte[] buffer = new byte[1024];
-
-        while (true) {
-          int len = Utils.readLineRN(clientIn, buffer);
-          if (len == 0) break;
-        }
+        byte[] buffer = new byte[8024/*1024*/];
+        int len = clientIn.read(buffer);
 
         // send 200 ok
         clientOut.write("HTTP/1.1 200 OK\r\n\r\n".getBytes());
