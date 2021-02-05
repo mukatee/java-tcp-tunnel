@@ -57,6 +57,8 @@ public class Params {
   private boolean dns = false;
   /** Enables UDP forwarding tunnel. */
   private boolean udp = false;
+  /** Enables HTTPS forwarding tunnel. */
+  private boolean https = false;
   /** Observers (typically loggers) for downstream data. */
   private List<TCPObserver> observersDown = new ArrayList<>();
   /** Observers (typically loggers) for upstream data. */
@@ -107,6 +109,13 @@ public class Params {
 
   public void setUDP(boolean udp) {
     this.udp = udp;
+  }
+
+  public boolean isHttps() {
+    return this.https;
+  }
+  public void setHttps(boolean https) {
+    this.https = https;
   }
 
   public boolean isAddLF() {
@@ -416,8 +425,7 @@ public class Params {
    * @return The list of configured downstream data observers (loggers).
    */
   public List<TCPObserver> createDownObservers(String sourceAddr) {
-    List<TCPObserver> result = new ArrayList<>();
-    result.addAll(observersDown);
+    List<TCPObserver> result = new ArrayList<>(observersDown);
     if (mirrorDownEnabled) result.add(new SocketForwardingObserver(this, mirrorDownHost, mirrorDownPort, sourceAddr));
     return result;
   }
@@ -428,8 +436,7 @@ public class Params {
    * @return The list of configured upstream data observers (loggers).
    */
   public List<TCPObserver> createUpObservers(String sourceAddr) {
-    List<TCPObserver> result = new ArrayList<>();
-    result.addAll(observersUp);
+    List<TCPObserver> result = new ArrayList<>(observersUp);
     if (mirrorUpEnabled) result.add(new SocketForwardingObserver(this, mirrorUpHost, mirrorUpPort, sourceAddr));
     return result;
   }

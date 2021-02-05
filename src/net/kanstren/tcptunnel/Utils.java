@@ -3,6 +3,7 @@ package net.kanstren.tcptunnel;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -55,4 +56,40 @@ public class Utils {
     return name;
   }
 
+  /**
+   * Read lines in http request
+   * Souce: trilead/ssh2 ClientServerHello.java
+   */
+  public static int readLineRN(InputStream is, byte[] buffer) throws IOException
+  {
+    int pos = 0;
+    boolean need10 = false;
+    int len = 0;
+    while (true)
+    {
+      int c = is.read();
+      if (c == -1)
+        throw new IOException("Premature connection close");
+
+      buffer[pos++] = (byte) c;
+
+      if (c == 13)
+      {
+        need10 = true;
+        continue;
+      }
+
+      if (c == 10)
+        break;
+
+      if (need10)
+        throw new IOException("Malformed line sent by the server, the line does not end correctly.");
+
+      len++;
+      if (pos >= buffer.length)
+        throw new IOException("The server sent a too long line: "+new String(buffer, StandardCharsets.ISO_8859_1));
+    }
+
+    return len;
+  }
 }

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -58,6 +59,21 @@ public class TCPTunnel extends Thread {
       OutputStream clientOut = localSocket.getOutputStream();
       InputStream serverIn = serverSocket.getInputStream();
       OutputStream serverOut = serverSocket.getOutputStream();
+
+      // Send http 200 ok to client and start forwarding
+      if (params.isHttps()) {
+        // read request client and ignore
+        byte[] buffer = new byte[1024];
+
+        while (true) {
+          int len = Utils.readLineRN(clientIn, buffer);
+          if (len == 0) break;
+        }
+
+        // send 200 ok
+        clientOut.write("HTTP/1.1 200 OK\r\n\r\n".getBytes());
+        clientOut.flush();
+      }
 
       // Start forwarding data between server and client
       active = true;
@@ -110,10 +126,10 @@ public class TCPTunnel extends Thread {
   public synchronized void connectionBroken() {
     try {
       serverSocket.close();
-    } catch (Exception e) {}
+    } catch (Exception ignored) {}
     try {
       localSocket.close();
-    } catch (Exception e) {}
+    } catch (Exception ignored) {}
 
     if (active) {
       String dateStr = sdf.format(new Date());
