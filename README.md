@@ -214,7 +214,7 @@ Either use Maven dependencies or download the jar directly.
 </dependency>
 ```
 
-or direct [link](http://central.maven.org/maven2/net/kanstren/tcptunnel/tcptunnel/1.2.0/tcptunnel-1.2.0.jar)
+or download (the [jar file](https://github.com/mukatee/java-tcp-tunnel/releases/download/1.2.0/tcptunnel-1.2.0.jar)) from the [release page](https://github.com/mukatee/java-tcp-tunnel/releases)
 
 Go Cousin
 ---------
