@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="tcptunnel:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/tcptunnel_jar</output-path>
+    <root id="archive" name="tcptunnel.jar">
+      <element id="module-output" name="tcptunnel" />
+    </root>
+  </artifact>
+</component>

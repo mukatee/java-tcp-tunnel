@@ -3,6 +3,7 @@ package net.kanstren.tcptunnel;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -54,5 +55,4 @@ public class Utils {
     }
     return name;
   }
-
 }

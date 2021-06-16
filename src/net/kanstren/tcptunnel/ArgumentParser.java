@@ -60,6 +60,10 @@ public class ArgumentParser {
           options.add(new Option("--gzip", "true"));
           continue;
         }
+        if (arg.equals("--https-tun")) {
+          options.add(new Option("--https-tun", "true"));
+          continue;
+        }
         if (args.length <= i + 1) {
           //all options coming this far should have a value. otherwise it is an error.
           errors += "No value given for option " + arg + ". Please provide one." + ln;
@@ -108,6 +112,7 @@ public class ArgumentParser {
     boolean hex = false;
     //this is to trace if any loggers are defined. if not, we add the default later.
     int loggers = 0;
+    StringBuilder errorsBuilder = new StringBuilder(errors);
     for (Option option : options) {
       String name = option.name;
       switch (name) {
@@ -116,9 +121,9 @@ public class ArgumentParser {
           try {
             int bufferSize = Integer.parseInt(option.value);
             params.setBufferSize(bufferSize);
-            if (bufferSize <= 0) errors += "Buffer size has to be > 0, was: " + bufferSize + "." + ln;
+            if (bufferSize <= 0) errorsBuilder.append("Buffer size has to be > 0, was: ").append(bufferSize).append(".").append(ln);
           } catch (NumberFormatException e) {
-            errors += "Invalid number for 'buffersize':" + option.value + "." + ln;
+            errorsBuilder.append("Invalid number for 'buffersize':").append(option.value).append(".").append(ln);
           }
           break;
         case "--encoding":
@@ -126,9 +131,9 @@ public class ArgumentParser {
           params.setEncoding(option.value);
           try {
             boolean supported = Charset.isSupported(option.value);
-            if (!supported) errors += "Unsupported encoding: '" + option.value + "'." + ln;
+            if (!supported) errorsBuilder.append("Unsupported encoding: '").append(option.value).append("'.").append(ln);
           } catch (Exception e) {
-            errors += "Unsupported encoding: '" + option.value + "'." + ln;
+            errorsBuilder.append("Unsupported encoding: '").append(option.value).append("'.").append(ln);
           }
           break;
         case "--down":
@@ -146,9 +151,9 @@ public class ArgumentParser {
           try {
             int iValue = Integer.parseInt(option.value);
             params.setMirrorDownPort(iValue);
-            if (iValue <= 1 || iValue > 65535) errors += "Invalid mirror-down port value. Should be between 1-65535, was: " + iValue + "." + ln;
+            if (iValue <= 1 || iValue > 65535) errorsBuilder.append("Invalid mirror-down port value. Should be between 1-65535, was: ").append(iValue).append(".").append(ln);
           } catch (NumberFormatException e) {
-            errors += "Invalid number for 'mirrordownport':" + option.value + "." + ln;
+            errorsBuilder.append("Invalid number for 'mirrordownport':").append(option.value).append(".").append(ln);
           }
           break;
         case "--mirror-up-host":
@@ -158,9 +163,9 @@ public class ArgumentParser {
           try {
             int iValue = Integer.parseInt(option.value);
             params.setMirrorUpPort(iValue);
-            if (iValue <= 1 || iValue > 65535) errors += "Invalid mirror-up port value. Should be between 1-65535, was: " + iValue + "." + ln;
+            if (iValue <= 1 || iValue > 65535) errorsBuilder.append("Invalid mirror-up port value. Should be between 1-65535, was: ").append(iValue).append(".").append(ln);
           } catch (NumberFormatException e) {
-            errors += "Invalid number for 'mirrorupport':" + option.value + "." + ln;
+            errorsBuilder.append("Invalid number for 'mirrorupport':").append(option.value).append(".").append(ln);
           }
           break;
         case "--hex":
@@ -193,12 +198,17 @@ public class ArgumentParser {
           //try to decompress gzip encoding in HTTP requests for string logs
           params.setGzip(true);
           break;
+        case "--https-tun":
+          //enable https proxy tunnel
+          params.setHttps(true);
+          break;
         default:
           //anything not processed above is invalid..
-          errors += "Invalid option '" + name + "'." + ln;
+          errorsBuilder.append("Invalid option '").append(name).append("'.").append(ln);
           break;
       }
     }
+    errors = errorsBuilder.toString();
     //add the default logger if none found before
     if (loggers == 0) options.add(new Option("--logger", "console-string"));
     for (Option option : options) {
